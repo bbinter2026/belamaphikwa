@@ -13,8 +13,8 @@
 
     <style>
         @page {
-            size: 8.27in 11.69in;
-            margin: 0;
+            size: A4 portrait;
+            margin: 6mm 8mm;
         }
 
         body {
@@ -65,8 +65,7 @@
         .items-grid-container {
             display: flex;
             flex-direction: column;
-            height: 10.35cm;
-            min-height: 10.35cm;
+            height: auto;
             border-top: 1pt solid #000000;
             border-bottom: 1pt solid #000000;
             border-left: 0.5pt solid #333333;
@@ -91,11 +90,13 @@
             display: grid;
             grid-template-columns: 60px 1fr 50px 32px 85px 42px 42px 95px;
             font-size: 8.5pt;
-            min-height: 0.65cm;
+            height: 0.60cm;
+            min-height: 0.60cm;
             position: relative;
+            align-items: center;
         }
 
-        .items-col { border-right: 0.5pt solid #333333; padding: 1px 4px; display: flex; align-items: center; }
+        .items-col { border-right: 0.5pt solid #333333; padding: 1px 4px; display: flex; align-items: center; height: 100%; }
         .items-col:last-child { border-right: none; }
 
         .grid-lines-overlay {
@@ -112,24 +113,69 @@
         .logo-box-container { width: 6.2cm; height: 3.2cm; background: #ffffff; border: 0.5pt solid #cbd5e1; }
         .logo-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
 
+        /* IMPRESSÃO OTIMIZADA PARA A4 COM ESPAÇO AMPLO PARA CARIMBO E ASSINATURA */
         @media print {
             body { 
                 background: none !important;
                 background-image: none !important;
                 background-color: #ffffff !important;
+                font-size: 9.5pt !important;
             }
             .no-print { display: none !important; }
-            #invoiceNote { border: none !important; resize: none !important; background: transparent !important; }
+            #invoiceNote { 
+                border: none !important; 
+                resize: none !important; 
+                background: transparent !important; 
+                overflow: hidden !important;
+            }
             #printArea {
                 box-shadow: none !important;
                 border: none !important;
-                width: 8.27in !important;
-                height: 11.69in !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
                 margin: 0 !important;
-                padding: 8mm 10mm !important;
+                padding: 0 !important;
                 background: #ffffff !important;
             }
             .editable-field { background: transparent !important; outline: none !important; }
+
+            .items-grid-container {
+                height: auto !important;
+            }
+            .items-grid-row {
+                height: 0.56cm !important;
+                min-height: 0.56cm !important;
+            }
+            .items-col {
+                padding-top: 1px !important;
+                padding-bottom: 1px !important;
+                line-height: 1.1 !important;
+            }
+            .items-grid-header {
+                height: 0.60cm !important;
+            }
+            .erp-table th, .erp-table td {
+                height: auto !important;
+                padding: 2px 3px !important;
+            }
+            
+            thead { display: table-header-group !important; }
+            
+            .print-avoid-break {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .erp-table, .items-grid-header, .items-grid-row, #banksContainer {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .mb-4 { margin-bottom: 2mm !important; }
+            .mb-2 { margin-bottom: 1mm !important; }
+            .mb-1 { margin-bottom: 0.5mm !important; }
+            .mt-8 { margin-top: 8mm !important; }
+            .pt-4 { padding-top: 4mm !important; }
         }
     </style>
 </head>
@@ -202,17 +248,17 @@
             </div>
         </aside>
 
-        <!-- Main Invoice A4 Document Container -->
-        <main id="printArea" class="print-page bg-white w-full max-w-[8.27in] min-h-[11.69in] max-h-[11.69in] p-4 sm:p-5 shadow-2xl text-[9.5pt] leading-snug text-black flex flex-col justify-between mb-4 relative rounded-lg sm:rounded-none z-10">
+        <!-- Documento Principal A4 -->
+        <main id="printArea" class="print-page bg-white w-full max-w-[8.27in] min-h-[11.69in] p-4 sm:p-5 shadow-2xl text-[9.5pt] leading-snug text-black flex flex-col justify-between mb-4 relative rounded-lg sm:rounded-none z-10">
             
             <div class="space-y-1">
-                <!-- LOGO & BRANDING HEADER BLOCK -->
+                <!-- Cabeçalho e Logo -->
                 <div class="flex justify-between items-start mb-2">
                     <div id="logoContainer" class="logo-box-container group shrink-0 relative overflow-hidden shadow-sm flex items-center justify-center border border-slate-300">
                         <input type="file" id="logoFileInput" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="handleLogoUpload(event)">
                         
                         <div id="logoDisplay" class="logo-container w-full h-full p-1 bg-white">
-                            <!-- SVG Original será carregado por JavaScript como Padrão -->
+                            <!-- SVG Original / Logo Imagem -->
                         </div>
 
                         <div id="logoOverlayBadge" class="no-print absolute inset-0 bg-slate-900/70 text-white text-[9px] font-bold opacity-0 hidden group-hover:opacity-100 flex flex-col items-center justify-center transition p-1 text-center cursor-pointer" onclick="triggerLogoUpload()">
@@ -224,7 +270,7 @@
 
                 <div class="w-full h-[1.5px] bg-[#007b85] mb-1"></div>
 
-                <!-- COMPANY & CUSTOMER INFO -->
+                <!-- Dados da Empresa e Cliente -->
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-1 text-[10pt]">
                     <div class="sm:col-span-6 space-y-0.5 leading-snug">
                         <h1 class="font-bold uppercase text-[10.5pt] outline-none rounded px-1 -mx-1 editable-field" contenteditable="false" id="companyName">BELLA MAPIKWA SBRAY, EI</h1>
@@ -251,7 +297,7 @@
                     </div>
                 </div>
 
-                <!-- DOCUMENT TYPE & NUMBER SELECTION -->
+                <!-- Tipo de Documento -->
                 <div class="flex justify-end mb-1 overflow-x-auto">
                     <div class="text-right w-full sm:w-auto">
                         <div class="flex items-center justify-end gap-1.5 font-bold text-[13pt] sm:text-[15pt] text-[#007b85] mb-0.5 tracking-tight uppercase flex-wrap">
@@ -294,7 +340,7 @@
 
                 <div class="text-right text-[8.5pt] font-normal mb-0.5 pr-0.5">Original</div>
 
-                <!-- SECONDARY ERP TABLE -->
+                <!-- Tabela ERP Secundária -->
                 <div class="mb-1 overflow-x-auto">
                     <table class="erp-table w-full text-center text-[8.5pt] min-w-[480px]">
                         <thead>
@@ -322,9 +368,8 @@
                     </table>
                 </div>
 
-                <!-- ITEMS TABLE GRID -->
                 <div class="items-grid-container mb-0.5">
-                    <div class="items-grid-header">
+                    <div class="items-grid-header print-avoid-break">
                         <div class="items-col justify-start pl-1">Artigo</div>
                         <div class="items-col justify-start pl-1">Descrição</div>
                         <div class="items-col justify-end pr-1">Quant.</div>
@@ -342,17 +387,16 @@
                         <div class="grid-line-col"></div><div class="grid-line-col"></div>
                     </div>
 
-                    <div class="items-grid-body z-10" id="itemsGridBody">
-                        <!-- Populated via JS -->
-                    </div>
+                    <!-- Renderização exata das 20 linhas (18 itens/preenchimento + 1 nota/extenso + 1 fecho) -->
+                    <div class="items-grid-body z-10" id="itemsGridBody"></div>
                 </div>
 
-                <!-- FOOTER METRICS -->
+                <!-- Rodapé e Métricas -->
                 <div class="flex items-center text-[7.5pt] mb-1 px-0.5 space-x-4 flex-wrap text-black">
                     <div>Documento Processado por Computador • Supabase Database Connected</div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start print-avoid-break">
                     <div class="md:col-span-7 flex flex-col justify-between h-full">
                         <div class="mb-1.5 overflow-x-auto">
                             <table class="erp-table text-center text-[8.5pt] w-full">
@@ -423,9 +467,10 @@
                             </tbody>
                         </table>
 
-                        <div class="mt-8 sm:mt-10 pt-4">
+                        <!-- Espaço Expandido Otimizado para Assinatura e Carimbo -->
+                        <div class="mt-10 sm:mt-12 pt-6">
                             <div class="w-full border-b border-black mb-1"></div>
-                            <p class="font-normal text-center text-[8.5pt] outline-none rounded px-1 editable-field" contenteditable="false" id="signatureLabel">Assinatura GERÊNCIA</p>
+                            <p class="font-normal text-center text-[8.5pt] outline-none rounded px-1 editable-field" contenteditable="false" id="signatureLabel">Assinatura e Carimbo - GERÊNCIA</p>
                         </div>
                     </div>
                 </div>
@@ -446,7 +491,7 @@
         <script async="async" data-cfasync="false" src="https://pl30778022.profitableratecpmnetwork.com/edbac03e0788a019f72e8767b9dc91d4/invoke.js"></script>
     </footer>
 
-    <!-- CALENDAR MODAL -->
+    <!-- MODAL DE CALENDÁRIO -->
     <div id="calendarModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeCalendarModal()">
         <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[340px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
             <div class="bg-slate-900/90 border-b border-cyan-500/30 p-3.5 flex justify-between items-center">
@@ -458,9 +503,7 @@
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-cyan-400 mb-2">
                     <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
                 </div>
-                <div class="grid grid-cols-7 gap-1 text-center text-xs" id="calendarDaysGrid">
-                    <!-- Gerado via JS -->
-                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs" id="calendarDaysGrid"></div>
             </div>
             <div class="bg-slate-900/90 p-3 border-t border-cyan-500/30 flex justify-end">
                 <button onclick="closeCalendarModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg font-semibold transition border border-slate-700">Cancelar</button>
@@ -468,13 +511,13 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
+    <!-- NOTIFICAÇÃO TOAST -->
     <div id="toastNotification" class="no-print fixed bottom-5 right-5 z-[999] bg-slate-900/95 text-white px-4 py-3 rounded-xl shadow-2xl border border-cyan-500/50 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-md">
         <i class="fa-solid fa-circle-check text-cyan-400 text-sm neon-glow-cyan" id="toastIcon"></i>
         <span id="toastMessage" class="text-cyan-100 font-medium">Operação realizada com sucesso!</span>
     </div>
 
-    <!-- HISTORY MODAL -->
+    <!-- MODAL DE HISTÓRICO -->
     <div id="historyModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeHistoryModal()">
         <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[560px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
             <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
@@ -499,7 +542,7 @@
         </div>
     </div>
 
-    <!-- LOGIN & REGISTER MODAL -->
+    <!-- MODAL DE LOGIN E REGISTO SIMPLIFICADO -->
     <div id="loginModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
         <div id="loginModalCard" class="neon-card-bg neon-border-cyan rounded-3xl shadow-[0_0_40px_rgba(0,243,255,0.25)] w-[440px] max-w-full overflow-hidden text-white relative" onclick="event.stopPropagation()">
             <div class="p-6 text-center relative z-10 border-b border-cyan-500/20">
@@ -539,8 +582,8 @@
 
             <form id="registerFormContainer" onsubmit="handleRegisterSubmit(event)" class="p-6 space-y-3.5 relative z-10 hidden">
                 <div class="bg-amber-950/40 border border-amber-500/40 text-amber-200 p-2.5 rounded-xl text-[11px] flex items-center gap-2.5">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm"></i>
-                    <span>Limite máximo de <strong>5 utilizadores</strong> com data de validade configurada.</span>
+                    <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
+                    <span>Validade padrão inicial de <strong>1 Ano</strong> atribuída automaticamente.</span>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-cyan-200 mb-1">Nome do Utilizador</label>
@@ -554,10 +597,6 @@
                     <label class="block text-xs font-semibold text-cyan-200 mb-1">Palavra-passe (Mínimo 6 caracteres)</label>
                     <input type="password" id="regPassword" required minlength="6" placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Data de Expiração da Licença</label>
-                    <input type="date" id="regExpiryDate" required class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
-                </div>
                 <div id="registerErrorMsg" class="hidden text-pink-400 text-xs text-center font-medium bg-pink-950/60 p-2.5 rounded-xl border border-pink-500/50">Erro ao cadastrar novo utilizador.</div>
                 <div class="pt-2 flex justify-end gap-2.5">
                     <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-slate-900/90 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700">Cancelar</button>
@@ -567,22 +606,21 @@
         </div>
     </div>
 
-    <!-- USER & LICENSE MANAGEMENT MODAL -->
+    <!-- MODAL DE ADMINISTRAÇÃO E LICENÇAS -->
     <div id="userMgmtModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
-        <div class="neon-card-bg neon-border-cyan rounded-3xl shadow-2xl w-[780px] max-w-full overflow-hidden text-white relative">
+        <div class="neon-card-bg neon-border-cyan rounded-3xl shadow-2xl w-[820px] max-w-full overflow-hidden text-white relative">
             <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 p-2.5 rounded-xl"><i class="fa-solid fa-users-gear text-lg"></i></div>
                     <div>
                         <h3 class="font-bold text-base leading-tight text-cyan-200 neon-glow-cyan">Administração do Sistema</h3>
-                        <p class="text-xs text-slate-400">Gerir Utilizadores, Fundo e Logotipo</p>
+                        <p class="text-xs text-slate-400">Gerir Utilizadores, Validades e Personalização Visual</p>
                     </div>
                 </div>
                 <button onclick="closeUserMgmtModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
             <div class="p-5 max-h-[600px] overflow-y-auto space-y-6">
-                <!-- User Management Section -->
                 <div>
                     <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
                         <span class="flex items-center gap-2"><i class="fa-solid fa-list text-cyan-400"></i> Utilizadores Cadastrados (<span id="userCountText">0</span> / 5 limite)</span>
@@ -594,7 +632,7 @@
                                     <th class="p-3">Utilizador</th>
                                     <th class="p-3">Email</th>
                                     <th class="p-3">Perfil</th>
-                                    <th class="p-3">Data Expiração</th>
+                                    <th class="p-3">Data Expiração (Editável)</th>
                                     <th class="p-3 text-center">Estado</th>
                                     <th class="p-3 text-center">Ações</th>
                                 </tr>
@@ -604,7 +642,6 @@
                     </div>
                 </div>
 
-                <!-- Background Management Section -->
                 <div class="border-t border-cyan-500/30 pt-5">
                     <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
                         <span class="flex items-center gap-2"><i class="fa-solid fa-image text-cyan-400"></i> Background da Aplicação (Área Externa)</span>
@@ -616,7 +653,7 @@
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-cyan-200">Personalizar Ambiente Visual</p>
-                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue uma imagem (PNG, JPG, WEBP). O background altera apenas a área envolvente da factura.</p>
+                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue uma imagem (PNG, JPG, WEBP). Altera a área externa do documento.</p>
                             </div>
                         </div>
                         <div class="flex flex-col gap-2 min-w-[140px]">
@@ -631,7 +668,6 @@
                     </div>
                 </div>
                 
-                <!-- Logo Management Section -->
                 <div class="border-t border-cyan-500/30 pt-5">
                     <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
                         <span class="flex items-center gap-2"><i class="fa-solid fa-camera text-cyan-400"></i> Logotipo da Empresa</span>
@@ -643,7 +679,7 @@
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-cyan-200">Substituir Logotipo</p>
-                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue o logotipo oficial da empresa. O logotipo antigo é automaticamente descartado para poupar espaço na BD.</p>
+                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue o logotipo oficial da empresa (PNG, JPG ou WEBP). É atualizado instantaneamente.</p>
                             </div>
                         </div>
                         <div class="flex flex-col gap-2 min-w-[140px]">
@@ -656,7 +692,6 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
             
             <div class="bg-slate-900/90 px-5 py-3 border-t border-cyan-500/30 flex justify-between items-center text-xs">
@@ -667,7 +702,6 @@
     </div>
 
     <script>
-        // CONFIGURAÇÕES SUPABASE
         const SUPABASE_URL = 'https://snfeihixucjfsadojhgb.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_pgqobHO8523w7jFz348dYg_0chnyljO';
         let supabaseClient = null;
@@ -704,7 +738,7 @@
             vatExemptionReason: "",
             totalDiscounts: 0, 
             totalAdvance: 0,
-            note: "",
+            note: "Pagamento deve ser efectuado num prazo de 15 dias.",
             items: [
                 { code: "001", description: "LANCHE DE MANHA (3 dias x 40 pess.)", qty: 120, unit: "UN", price: 450, discount: 0, vatRate: 16 },
                 { code: "002", description: "ALMOÇO (3 dias x 40 pess.)", qty: 120, unit: "UN", price: 1100, discount: 0, vatRate: 16 },
@@ -720,7 +754,6 @@
         let currentData = JSON.parse(JSON.stringify(defaultData));
         let isVatIncluded = true;
         let currentUser = { username: "Visitante", role: "guest", loggedIn: false };
-        let previousUserNote = "";
 
         let systemUsers = [
             { id: 1, username: "admin", email: "admin@bellamapikwa.co.mz", role: "admin", expiryDate: "2027-12-31", status: "Ativo" },
@@ -731,7 +764,29 @@
         let targetDateField = '';
         let currentCalendarDate = new Date();
 
-        // ---------------- GESTÃO DE BACKGROUND ---------------- //
+        async function loadUserSettings() {
+            if (!supabaseClient) return;
+            try {
+                const { data } = await supabaseClient.from('app_settings').select('user_licenses').eq('id', 1).single();
+                if (data && data.user_licenses && Array.isArray(data.user_licenses) && data.user_licenses.length > 0) {
+                    systemUsers = data.user_licenses;
+                }
+            } catch (e) {
+                console.log("A usar configurações padrão de utilizadores.");
+            }
+        }
+
+        async function saveUserLicenses() {
+            if (!supabaseClient) return;
+            try {
+                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                const payload = existing ? { ...existing, user_licenses: systemUsers } : { id: 1, user_licenses: systemUsers };
+                await supabaseClient.from('app_settings').upsert(payload);
+            } catch (err) {
+                console.error("Falha ao salvar licenças de utilizador", err);
+            }
+        }
+
         async function loadAppBackground() {
             if (!supabaseClient) return;
             try {
@@ -770,11 +825,11 @@
 
             const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
             if (!allowedTypes.includes(file.type)) {
-                showToast("Formato inválido. Por favor, use JPG, PNG ou WEBP.");
+                showToast("Formato inválido. Por favor, use JPG, PNG ou WEBP.", true);
                 return;
             }
             showToast("A carregar novo background. Aguarde...");
-            if (!supabaseClient) { showToast("Erro: Supabase não está conectado."); return; }
+            if (!supabaseClient) { showToast("Erro: Supabase não está conectado.", true); return; }
 
             try {
                 const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
@@ -798,7 +853,7 @@
                 showToast("Background atualizado com sucesso!");
             } catch (err) {
                 console.error("Erro no processo de background:", err);
-                showToast("Erro ao carregar o background.");
+                showToast("Erro ao carregar o background.", true);
             }
             event.target.value = '';
         }
@@ -821,11 +876,10 @@
                 showToast("Background removido. Tema padrão restaurado.");
             } catch (err) {
                 console.error("Erro ao remover:", err);
-                showToast("Erro ao remover background.");
+                showToast("Erro ao remover background.", true);
             }
         }
 
-        // ---------------- GESTÃO DO LOGOTIPO (NOVO) ---------------- //
         const defaultLogoSVG = `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" class="w-full h-full max-h-full">
                 <g fill="#0b5563">
@@ -865,7 +919,7 @@
                     applyLogo(null);
                 }
             } catch (e) {
-                console.log("Sistema usa o logo padrão.", e.message);
+                console.log("Sistema usa o logótipo padrão.", e.message);
                 applyLogo(null);
             }
         }
@@ -875,7 +929,7 @@
             const adminPreview = document.getElementById('adminLogoPreview');
             
             if (url) {
-                const finalUrl = url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
+                const finalUrl = url.startsWith('data:') ? url : (url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`);
                 const imgHTML = `<img src="${finalUrl}" class="w-full h-full object-contain" alt="Logotipo da Empresa">`;
                 if (display) display.innerHTML = imgHTML;
                 if (adminPreview) adminPreview.innerHTML = imgHTML;
@@ -886,86 +940,137 @@
         }
 
         function triggerLogoUpload() {
-            if (currentUser.role === 'admin') {
-                document.getElementById('logoFileInput').click();
-            } else if (currentUser.loggedIn) {
-                showToast("Apenas o ADMIN pode alterar o logotipo da empresa.");
+            if (!currentUser.loggedIn) {
+                showToast("Por favor, efetue login como Administrador para alterar o logótipo.", true);
+                openLoginModal();
+                return;
             }
+            if (currentUser.role !== 'admin') {
+                showToast("Apenas o Administrador pode alterar o logótipo da empresa.", true);
+                return;
+            }
+            const fileInput = document.getElementById('logoFileInput');
+            if (fileInput) fileInput.click();
         }
 
         async function handleLogoUpload(event) {
-            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            if (!allowedTypes.includes(file.type)) {
-                showToast("Formato inválido. Por favor, use PNG, JPG ou WEBP.");
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') {
+                showToast("Apenas o Administrador tem permissão para alterar o logótipo.", true);
                 return;
             }
 
-            showToast("A carregar novo logotipo. Aguarde...");
-            if (!supabaseClient) { showToast("Erro: Supabase não está conectado."); return; }
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            const fileExt = file.name.split('.').pop().toLowerCase();
+
+            if (!allowedMimeTypes.includes(file.type)) {
+                showToast("Selecione uma imagem válida em PNG, JPG ou WEBP.", true);
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                applyLogo(e.target.result);
+            };
+            reader.readAsDataURL(file);
+
+            showToast("A carregar e guardar o novo logótipo...");
 
             try {
-                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
-                
-                // Remover logotipo anterior do storage para não acumular
-                if (existing && existing.logo_path) {
-                    await supabaseClient.storage.from('app_assets').remove([existing.logo_path]);
+                let finalLogoUrl = null;
+                let filePath = null;
+
+                if (supabaseClient) {
+                    let existingSettings = null;
+                    try {
+                        const { data } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                        existingSettings = data;
+                    } catch (e) {
+                        console.warn("Aviso ao consultar registo de configurações:", e);
+                    }
+
+                    try {
+                        if (existingSettings && existingSettings.logo_path) {
+                            await supabaseClient.storage.from('app_assets').remove([existingSettings.logo_path]);
+                        }
+
+                        filePath = `logos/logo-${Date.now()}.${fileExt}`;
+                        const { error: uploadError } = await supabaseClient.storage.from('app_assets').upload(filePath, file, {
+                            cacheControl: '3600',
+                            upsert: true
+                        });
+
+                        if (!uploadError) {
+                            const { data: publicUrlData } = supabaseClient.storage.from('app_assets').getPublicUrl(filePath);
+                            if (publicUrlData && publicUrlData.publicUrl) {
+                                finalLogoUrl = publicUrlData.publicUrl;
+                            }
+                        }
+                    } catch (stErr) {
+                        console.warn("Exceção no Storage:", stErr);
+                    }
+
+                    if (!finalLogoUrl) {
+                        finalLogoUrl = await new Promise((resolve) => {
+                            const r = new FileReader();
+                            r.onload = (ev) => resolve(ev.target.result);
+                            r.readAsDataURL(file);
+                        });
+                    }
+
+                    const payload = existingSettings ? {
+                        ...existingSettings,
+                        logo_url: finalLogoUrl,
+                        logo_path: filePath || existingSettings.logo_path || null,
+                        updated_at: new Date().toISOString()
+                    } : {
+                        id: 1,
+                        logo_url: finalLogoUrl,
+                        logo_path: filePath,
+                        updated_at: new Date().toISOString()
+                    };
+
+                    const { error: dbError } = await supabaseClient.from('app_settings').upsert(payload);
+                    if (dbError) throw dbError;
+
+                    applyLogo(finalLogoUrl);
+                    showToast("Logótipo atualizado com sucesso!");
                 }
-
-                // Gerar caminho novo e previsível, timestamp resolve problema de cache e histórico sujo
-                const fileExt = file.name.split('.').pop();
-                const filePath = `logos/logo_${Date.now()}.${fileExt}`;
-                
-                const { error: uploadError } = await supabaseClient.storage.from('app_assets').upload(filePath, file, { cacheControl: '3600', upsert: false });
-                if (uploadError) throw uploadError;
-
-                const { data: publicUrlData } = supabaseClient.storage.from('app_assets').getPublicUrl(filePath);
-                const publicUrl = publicUrlData.publicUrl;
-
-                const payload = existing ? { ...existing, logo_url: publicUrl, logo_path: filePath } : { id: 1, logo_url: publicUrl, logo_path: filePath };
-                const { error: dbError } = await supabaseClient.from('app_settings').upsert(payload);
-                if (dbError) throw dbError;
-
-                applyLogo(publicUrl);
-                showToast("Logotipo atualizado com sucesso!");
             } catch (err) {
-                console.error("Erro no processo de logotipo:", err);
-                showToast("Erro ao carregar o logotipo.");
+                console.error("Erro no upload do logo:", err);
+                showToast("Não foi possível alterar o logótipo.", true);
+            } finally {
+                event.target.value = '';
             }
-            
-            event.target.value = '';
         }
 
         async function removeActiveLogo() {
             if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
-            if (!supabaseClient) return;
-            if (!confirm("Tem a certeza que deseja remover o logotipo atual?")) return;
+            if (!confirm("Tem a certeza que deseja remover o logótipo personalizado?")) return;
 
-            showToast("A remover logotipo...");
+            showToast("A remover logótipo...");
 
             try {
-                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
-                
-                if (existing && existing.logo_path) {
-                    await supabaseClient.storage.from('app_assets').remove([existing.logo_path]);
+                if (supabaseClient) {
+                    const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                    if (existing && existing.logo_path) {
+                        await supabaseClient.storage.from('app_assets').remove([existing.logo_path]);
+                    }
+                    const payload = existing ? { ...existing, logo_url: null, logo_path: null } : { id: 1, logo_url: null, logo_path: null };
+                    await supabaseClient.from('app_settings').upsert(payload);
                 }
 
-                const payload = existing ? { ...existing, logo_url: null, logo_path: null } : { id: 1, logo_url: null, logo_path: null };
-                await supabaseClient.from('app_settings').upsert(payload);
-
                 applyLogo(null);
-                showToast("Logotipo removido. Padrão restaurado.");
+                showToast("Logótipo removido. Padrão restaurado.");
             } catch (err) {
-                console.error("Erro ao remover:", err);
-                showToast("Erro ao remover logotipo.");
+                console.error("Erro ao remover logo:", err);
+                showToast("Erro ao remover logótipo.", true);
             }
         }
 
-
-        // FUNÇÕES GLOBAIS DE FORMATAÇÃO E CÁLCULO
         function formatNumber(num, decimals = 2) {
             if (isNaN(num)) return "0,00";
             const parts = num.toFixed(decimals).split('.');
@@ -979,91 +1084,92 @@
             return parseFloat(clean) || 0;
         }
 
-        function valorPorExtenso(numero) {
+        function numberToWordsPortuguese(value) {
+            if (value === 0) return "Zero meticais";
+
             const unidades = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
             const dezenas = ["", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
             const centenas = ["", "cento", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"];
 
-            function converterGrupo(n) {
-                if (n === 0) return "";
+            function getGroup(n) {
                 if (n === 100) return "cem";
                 let c = Math.floor(n / 100);
                 let d = Math.floor((n % 100) / 10);
                 let u = n % 10;
-                let res = [];
+                let words = [];
 
-                if (c > 0) res.push(centenas[c]);
+                if (c > 0) words.push(centenas[c]);
                 if (d === 1) {
-                    res.push(["dez", "onze", "doze", "treze", "catorze", "quinze", "dezasseis", "dezassete", "dezoito", "dezanove"][u]);
+                    words.push(["dez", "onze", "doze", "treze", "catorze", "quinze", "dezasseis", "dezassete", "dezoito", "dezanove"][u]);
                 } else {
-                    if (d > 1) res.push(dezenas[d]);
-                    if (u > 0) res.push(unidades[u]);
+                    if (d > 1) words.push(dezenas[d]);
+                    if (u > 0) words.push(unidades[u]);
                 }
-                return res.join(" e ");
+                return words.join(" e ");
             }
 
-            if (numero === 0) return "zero meticais";
+            let meticais = Math.floor(value);
+            let centavos = Math.round((value - meticais) * 100);
 
-            let meticais = Math.floor(numero);
-            let centavos = Math.round((numero - meticais) * 100);
-
-            let txtMeticais = "";
+            let parts = [];
             if (meticais > 0) {
                 let milhoes = Math.floor(meticais / 1000000);
-                let m = meticais % 1000000;
-                let milhares = Math.floor(m / 1000);
-                let resto = m % 1000;
+                let milhares = Math.floor((meticais % 1000000) / 1000);
+                let unidadesSimples = meticais % 1000;
 
-                let partes = [];
                 if (milhoes > 0) {
-                    partes.push(converterGrupo(milhoes) + (milhoes === 1 ? " milhão" : " milhões"));
+                    parts.push(getGroup(milhoes) + (milhoes === 1 ? " milhão" : " milhões"));
                 }
                 if (milhares > 0) {
-                    partes.push((milhares === 1 ? "" : converterGrupo(milhares) + " ") + "mil");
-                }
-                if (resto > 0) {
-                    let prefixo = "";
-                    if (partes.length > 0) {
-                        if (resto <= 100 || resto % 100 === 0) prefixo = " e ";
-                        else prefixo = " ";
+                    let milStr = milhares === 1 ? "mil" : getGroup(milhares) + " mil";
+                    if (parts.length > 0) {
+                        if (milhares <= 100 || milhares % 100 === 0) {
+                            parts.push("e " + milStr);
+                        } else {
+                            parts.push(milStr);
+                        }
+                    } else {
+                        parts.push(milStr);
                     }
-                    partes.push(prefixo + converterGrupo(resto));
+                }
+                if (unidadesSimples > 0) {
+                    let prefix = "";
+                    if (parts.length > 0) {
+                        if (unidadesSimples <= 100 || unidadesSimples % 100 === 0) {
+                            prefix = "e ";
+                        }
+                    }
+                    parts.push(prefix + getGroup(unidadesSimples));
                 }
 
-                txtMeticais = partes.join("").trim().replace(/\s+/g, ' ');
-                if (milhoes > 0 && milhares === 0 && resto === 0) txtMeticais += " de";
-                txtMeticais += (meticais === 1 ? " metical" : " meticais");
+                let result = parts.join(" ").replace(/\s+/g, ' ').trim();
+                if (milhoes > 0 && milhares === 0 && unidadesSimples === 0) result += " de";
+                result += meticais === 1 ? " metical" : " meticais";
+                
+                parts = [result];
             }
 
-            let txtCentavos = "";
             if (centavos > 0) {
-                txtCentavos = converterGrupo(centavos) + (centavos === 1 ? " centavo" : " centavos");
+                let centavosStr = getGroup(centavos) + (centavos === 1 ? " centavo" : " centavos");
+                if (parts.length > 0) parts.push("e " + centavosStr);
+                else parts.push(centavosStr);
             }
 
-            if (txtMeticais && txtCentavos) return txtMeticais + " e " + txtCentavos;
-            if (txtMeticais) return txtMeticais;
-            return txtCentavos;
+            let finalStr = parts.join(" ");
+            return finalStr.charAt(0).toUpperCase() + finalStr.slice(1);
         }
 
-        // CARREGAMENTO INICIAL
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
+                await loadUserSettings(); 
                 loadAppBackground(); 
-                loadAppLogo(); // Verifica se há logotipo no Supabase no arranque da app
+                await loadAppLogo(); 
                 renderInvoice();
                 setupEditableFields();
                 updateUIPermissions();
-                const tomorrow = new Date();
-                tomorrow.setMonth(tomorrow.getMonth() + 3);
-                const dateStr = tomorrow.toISOString().split('T')[0];
-                const expiryInput = document.getElementById('regExpiryDate');
-                if (expiryInput) expiryInput.value = dateStr;
-                
-                if(typeof loadSupabaseHistoryCount === 'function') {
-                    loadSupabaseHistoryCount();
-                }
+                loadSupabaseHistoryCount();
             } catch (err) {
-                console.error("Initialization error:", err);
+                console.error("Erro na inicialização da página:", err);
             }
         });
 
@@ -1148,56 +1254,58 @@
                 let rawVatVal = 0;
                 let rawNet = 0;
 
-                currentData.items.forEach((item, index) => {
-                    const qty = Number(item.qty) || 0;
-                    const price = Number(item.price) || 0;
-                    const disc = showDiscounts ? (Number(item.discount) || 0) : 0; 
-                    
-                    const itemGross = qty * price;
-                    const itemNet = itemGross - disc;
-                    
-                    sumGross += itemGross;
-                    sumItemDisc += disc;
-                    rawNet += itemNet;
+                const realItemsCount = currentData.items.length;
+                // Reduzido para 18 linhas de itens/preenchimento para dar mais espaço de carimbo e assinatura nas margens
+                const TOTAL_ITEM_ROWS = 18; 
 
-                    const vatRate = Number(item.vatRate) || 16;
-                    const lineVat = isVatIncluded ? (itemNet * vatRate) / (100 + vatRate) : (itemNet * vatRate) / 100;
-                    rawVatVal += lineVat;
-
+                // 1. LINHAS 1 A 18 (ITENS + PREENCHIMENTO VAZIO)
+                for (let i = 0; i < TOTAL_ITEM_ROWS; i++) {
                     const row = document.createElement('div');
-                    row.className = 'items-grid-row group';
+                    row.className = 'items-grid-row print-avoid-break';
                     row.style.gridTemplateColumns = gridCols;
-                    row.innerHTML = `
-                        <div class="items-col justify-start pl-1 relative"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.code || ''}" onblur="updateItemField(${index}, 'code', this.value)"></div>
-                        <div class="items-col justify-start pl-1"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.description || ''}" onblur="updateItemField(${index}, 'description', this.value)"></div>
-                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${qty}" onblur="updateItemField(${index}, 'qty', this.value)"></div>
-                        <div class="items-col justify-center"><input type="text" class="input-cell text-center" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.unit || ''}" onblur="updateItemField(${index}, 'unit', this.value)"></div>
-                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(price, 2)}" onblur="updateItemField(${index}, 'price', this.value)"></div>
-                        ${showDiscounts ? `<div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(disc, 2)}" onblur="updateItemField(${index}, 'discount', this.value)"></div>` : ''}
-                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${vatRate}" onblur="updateItemField(${index}, 'vatRate', this.value)"></div>
-                        <div class="items-col justify-end pr-1 font-medium relative">
-                            ${formatNumber(itemNet, 2)}
-                            ${currentUser.loggedIn ? `
-                            <button onclick="removeInvoiceItem(${index})" class="no-print absolute -right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition p-0.5 rounded shadow-sm z-10" title="Remover item">
-                                <i class="fa-solid fa-times text-xs"></i>
-                            </button>` : ''}
-                        </div>
-                    `;
-                    itemsContainer.appendChild(row);
-                });
 
-                if (currentUser.loggedIn) {
-                    const addRow = document.createElement('div');
-                    addRow.className = 'no-print z-20 relative bg-white border-b border-slate-100 flex items-center p-1';
-                    addRow.innerHTML = `
-                        <button onclick="addInvoiceRow()" class="text-[10px] bg-slate-800 text-white px-2.5 py-1 rounded font-medium hover:bg-slate-700 transition flex items-center gap-1.5 shadow-sm border border-slate-700">
-                            <i class="fa-solid fa-plus text-emerald-400"></i> Adicionar Item
-                        </button>
-                        <button onclick="toggleNoteField()" class="ml-2 text-[10px] bg-slate-50 text-[#007b85] px-2.5 py-1 rounded font-medium hover:bg-slate-200 transition flex items-center gap-1.5 border border-slate-300">
-                            <i class="fa-solid ${currentData.note ? 'fa-times' : 'fa-note-sticky'}"></i> ${currentData.note && (!isReceipt && !isInvoiceReceipt) ? 'Remover Nota' : 'Adicionar Nota'}
-                        </button>
-                    `;
-                    itemsContainer.appendChild(addRow);
+                    if (i < realItemsCount) {
+                        const item = currentData.items[i];
+                        const qty = Number(item.qty) || 0;
+                        const price = Number(item.price) || 0;
+                        const disc = showDiscounts ? (Number(item.discount) || 0) : 0;
+                        
+                        const itemGross = qty * price;
+                        const itemNet = itemGross - disc;
+                        
+                        sumGross += itemGross;
+                        sumItemDisc += disc;
+                        rawNet += itemNet;
+
+                        const vatRate = Number(item.vatRate) || 16;
+                        const lineVat = isVatIncluded ? (itemNet * vatRate) / (100 + vatRate) : (itemNet * vatRate) / 100;
+                        rawVatVal += lineVat;
+
+                        row.innerHTML = `
+                            <div class="items-col justify-start pl-1 relative"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.code || ''}" onblur="updateItemField(${i}, 'code', this.value)"></div>
+                            <div class="items-col justify-start pl-1"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.description || ''}" onblur="updateItemField(${i}, 'description', this.value)"></div>
+                            <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${qty}" onblur="updateItemField(${i}, 'qty', this.value)"></div>
+                            <div class="items-col justify-center"><input type="text" class="input-cell text-center" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.unit || ''}" onblur="updateItemField(${i}, 'unit', this.value)"></div>
+                            <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(price, 2)}" onblur="updateItemField(${i}, 'price', this.value)"></div>
+                            ${showDiscounts ? `<div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(disc, 2)}" onblur="updateItemField(${i}, 'discount', this.value)"></div>` : ''}
+                            <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${vatRate}" onblur="updateItemField(${i}, 'vatRate', this.value)"></div>
+                            <div class="items-col justify-end pr-1 font-medium relative">
+                                ${formatNumber(itemNet, 2)}
+                                ${currentUser.loggedIn ? `
+                                <button onclick="removeInvoiceItem(${i})" class="no-print absolute -right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition p-0.5 rounded shadow-sm z-10" title="Remover item">
+                                    <i class="fa-solid fa-times text-xs"></i>
+                                </button>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        const numCols = showDiscounts ? 8 : 7;
+                        let colsHTML = '';
+                        for (let c = 0; c < numCols; c++) {
+                            colsHTML += `<div class="items-col"></div>`;
+                        }
+                        row.innerHTML = colsHTML;
+                    }
+                    itemsContainer.appendChild(row);
                 }
 
                 const globalDisc = showDiscounts ? (Number(currentData.totalDiscounts) || 0) : 0;
@@ -1215,19 +1323,58 @@
                 const finalInvoiceTotal = isVatIncluded ? finalNetAfterAllDiscounts : finalNetAfterAllDiscounts + finalVatVal;
                 let balance = finalInvoiceTotal - advanceInput;
 
-                if (isReceipt || isInvoiceReceipt) {
-                    const extenso = valorPorExtenso(finalInvoiceTotal);
-                    currentData.note = extenso.charAt(0).toUpperCase() + extenso.slice(1) + ".";
+                // 2. LINHA 19 (PENÚLTIMA LINHA) -> NOTA OU VALOR POR EXTENSO
+                const isReceiptDoc = (isReceipt || isInvoiceReceipt);
+                const row19 = document.createElement('div');
+                row19.className = 'items-grid-row print-avoid-break bg-slate-50/40 print:bg-transparent border-t border-slate-300';
+                row19.style.gridTemplateColumns = gridCols;
+
+                let row19Content = '';
+                if (isReceiptDoc) {
+                    const extensoText = numberToWordsPortuguese(finalInvoiceTotal);
+                    row19Content = `<div class="w-full text-left font-bold text-[#007b85] text-[7.5pt] sm:text-[8pt] break-words whitespace-normal leading-tight">VALOR POR EXTENSO: <span class="font-semibold text-black">${extensoText}</span></div>`;
+                } else {
+                    const noteValue = (currentData.note || "").replace(/^NOTA:\s*/i, '');
+                    row19Content = `
+                        <div class="w-full flex items-center justify-start h-full gap-1">
+                            <span class="font-bold text-slate-800 text-[8pt] shrink-0">NOTA:</span>
+                            <input type="text" id="invoiceNote" class="w-full bg-transparent p-0 outline-none text-slate-800 text-[8.5pt] font-medium placeholder-slate-400" onblur="updateNoteField(this.value)" value="${noteValue}" placeholder="Insira a nota do documento aqui..." ${!currentUser.loggedIn ? 'disabled' : ''} />
+                        </div>
+                    `;
                 }
 
-                if (currentData.note !== null && currentData.note !== undefined && currentData.note !== "") {
-                    const noteRow = document.createElement('div');
-                    noteRow.className = 'z-20 relative bg-white flex flex-col p-1 border-b border-[#333333] group print:border-none print:border-t print:border-slate-300';
-                    noteRow.innerHTML = `
-                        <span class="font-bold text-slate-800 mb-0.5 text-[8.5pt]">Observações:</span>
-                        <textarea id="invoiceNote" class="w-full bg-transparent p-0 outline-none resize-none ${(isReceipt || isInvoiceReceipt) ? 'text-[#007b85] font-semibold' : 'text-slate-800'} text-[8.5pt] flex-1" onblur="updateNoteField(this.value)" placeholder="Insira as notas ou observações aqui..." ${!currentUser.loggedIn || isReceipt || isInvoiceReceipt ? 'disabled' : ''} style="min-height: 24px; overflow: hidden;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">${currentData.note}</textarea>
+                const numCols = showDiscounts ? 8 : 7;
+                let cols19HTML = '';
+                for (let c = 0; c < numCols; c++) {
+                    if (c === 1) {
+                        cols19HTML += `<div class="items-col justify-start items-center px-1">${row19Content}</div>`;
+                    } else {
+                        cols19HTML += `<div class="items-col"></div>`;
+                    }
+                }
+                row19.innerHTML = cols19HTML;
+                itemsContainer.appendChild(row19);
+
+                // 3. LINHA 20 (ÚLTIMA LINHA DE FECHO DA GRELHA)
+                const row20 = document.createElement('div');
+                row20.className = 'items-grid-row print-avoid-break';
+                row20.style.gridTemplateColumns = gridCols;
+                let cols20HTML = '';
+                for (let c = 0; c < numCols; c++) {
+                    cols20HTML += `<div class="items-col"></div>`;
+                }
+                row20.innerHTML = cols20HTML;
+                itemsContainer.appendChild(row20);
+
+                if (currentUser.loggedIn) {
+                    const addRow = document.createElement('div');
+                    addRow.className = 'no-print z-20 relative bg-white/90 backdrop-blur-sm border-t border-slate-200 flex items-center py-1.5 px-2 mt-auto shadow-inner';
+                    addRow.innerHTML = `
+                        <button onclick="addInvoiceRow()" class="text-[10px] bg-slate-800 text-white px-2.5 py-1 rounded font-medium hover:bg-slate-700 transition flex items-center gap-1.5 shadow-sm border border-slate-700">
+                            <i class="fa-solid fa-plus text-emerald-400"></i> Adicionar Item
+                        </button>
                     `;
-                    itemsContainer.appendChild(noteRow);
+                    itemsContainer.appendChild(addRow);
                 }
 
                 const rowDescCom = document.getElementById('row-desc-com');
@@ -1236,8 +1383,6 @@
                 
                 if (rowDescCom) rowDescCom.style.display = showDiscounts ? '' : 'none';
                 if (rowAdiantamento) rowAdiantamento.style.display = showAdvance ? '' : 'none';
-                
-                // Hide balance row for Receipt and Invoice-Receipt
                 if (balanceRow) balanceRow.style.display = (isReceipt || isInvoiceReceipt) ? 'none' : '';
 
                 setElText('totalGross', formatNumber(sumGross, 2));
@@ -1246,85 +1391,27 @@
                 
                 const totAdvEl = document.getElementById('totalAdvance');
                 if (totAdvEl) totAdvEl.value = formatNumber(advanceInput, 2);
+
+                const incidenceVal = isVatIncluded ? (finalNetAfterAllDiscounts - finalVatVal) : finalNetAfterAllDiscounts;
+                
+                setElText('vatRateDisplay', currentData.items.length > 0 ? (currentData.items[0].vatRate || "16") + ",00" : "16,00");
+                setElText('vatIncidenceDisplay', formatNumber(incidenceVal, 2));
+                setElText('vatAmountDisplay', formatNumber(finalVatVal, 2));
                 
                 setElText('totalVat', formatNumber(finalVatVal, 2));
                 setElText('totalInvoice', formatNumber(finalInvoiceTotal, 2));
-                
-                const incidence = isVatIncluded ? (finalNetAfterAllDiscounts - finalVatVal) : finalNetAfterAllDiscounts;
-                setElText('vatIncidenceDisplay', formatNumber(Math.max(0, incidence), 2));
-                setElText('vatAmountDisplay', formatNumber(finalVatVal, 2));
-                setElText('vatInclusiveLabel', isVatIncluded ? "Incluído" : "Adicionado");
-
-                const balanceEl = document.getElementById('balanceAmount');
-                if (balanceEl) {
-                     // For receipt or invoice-receipt, balance is not applicable, but we ensure it's not showing anyway
-                    balanceEl.innerText = formatNumber(Math.max(0, balance), 2);
-                }
+                setElText('balanceAmount', formatNumber(balance, 2));
 
                 renderBanks();
-
-            } catch (e) {
-                console.error("Error in renderInvoice:", e);
+                document.getElementById('vatInclusiveLabel').innerText = isVatIncluded ? "Incluído" : "Acrescido";
+                document.getElementById('vatModeBtn').innerHTML = `<i class="fa-solid fa-calculator"></i> Total c/ IVA (${isVatIncluded ? 'Sim' : 'Não'})`;
+            } catch (err) {
+                console.error("Erro no render da factura:", err);
             }
         }
 
-        function renderBanks() {
-            const container = document.getElementById('banksContainer');
-            if (!container) return;
-            container.innerHTML = '';
-            currentData.banks.forEach((bank, index) => {
-                const card = document.createElement('div');
-                card.className = 'p-1.5 border border-slate-300 rounded bg-slate-50 text-[8.5pt] space-y-0.5 relative print:bg-transparent';
-                card.innerHTML = `
-                    <p class="font-bold text-slate-800">${bank.bankName || ''}</p>
-                    <p>Conta: <span class="font-medium">${bank.account || ''}</span></p>
-                    <p>NIB: <span class="font-medium">${bank.nib || ''}</span></p>
-                    <p>Titular: <span class="font-medium">${bank.holder || currentData.company.name}</span></p>
-                    ${currentUser.loggedIn && currentUser.role === 'admin' ? `
-                        <button onclick="removeBankRow(${index})" class="no-print absolute top-1 right-1 text-red-600 hover:text-red-800 text-[10px] p-0.5"><i class="fa-solid fa-trash"></i></button>
-                    ` : ''}
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function setupEditableFields() {
-            const fieldsMap = [
-                { id: 'companyName', key: ['company', 'name'] },
-                { id: 'companyAddress', key: ['company', 'address'] },
-                { id: 'companyProvince', key: ['company', 'province'] },
-                { id: 'companyPhone', key: ['company', 'phone'] },
-                { id: 'companyNuit', key: ['company', 'nuit'] },
-                { id: 'companyEmail', key: ['company', 'email'] },
-                { id: 'customerName', key: ['customerName'] },
-                { id: 'customerAddress', key: ['customerAddress'] },
-                { id: 'customerTaxId', key: ['customerTaxId'] },
-                { id: 'customerDisc', key: ['customerDisc'] },
-                { id: 'paymentTerms', key: ['paymentTerms'] },
-                { id: 'financialDisc', key: ['financialDisc'] },
-                { id: 'salesZone', key: ['salesZone'] },
-                { id: 'docNumber', key: ['docNumber'] },
-                { id: 'docRequisicao', key: ['docRequisicao'] },
-                { id: 'docCurrency', key: ['docCurrency'] },
-                { id: 'docExchangeRate', key: ['docExchangeRate'] },
-                { id: 'vatExemptionReason', key: ['vatExemptionReason'] },
-                { id: 'signatureLabel', key: ['signatureLabel'] }
-            ];
-
-            fieldsMap.forEach(f => {
-                const el = document.getElementById(f.id);
-                if (el) {
-                    el.addEventListener('blur', () => {
-                        const val = el.innerText.trim();
-                        if (f.key.length === 1) currentData[f.key[0]] = val;
-                        else if (f.key.length === 2) currentData[f.key[0]][f.key[1]] = val;
-                    });
-                }
-            });
-        }
-
         function updateItemField(index, field, value) {
-            if (['qty', 'price', 'discount', 'vatRate'].includes(field)) {
+            if (field === 'qty' || field === 'price' || field === 'discount' || field === 'vatRate') {
                 currentData.items[index][field] = parseNumber(value);
             } else {
                 currentData.items[index][field] = value;
@@ -1332,207 +1419,191 @@
             renderInvoice();
         }
 
-        function updateTotals(type, value) {
-            if (!currentUser.loggedIn) return;
-            const num = parseNumber(value);
-            if (type === 'discount') {
-                let sumItemDisc = 0;
-                currentData.items.forEach(i => sumItemDisc += Number(i.discount) || 0);
-                currentData.totalDiscounts = Math.max(0, num - sumItemDisc);
-            }
-            if (type === 'advance') currentData.totalAdvance = num;
-            renderInvoice();
-        }
-        
-        function toggleNoteField() {
-            if (!currentUser.loggedIn) return;
-            if (currentData.docType === 'Recibo' || currentData.docType === 'Factura-Recibo') {
-                showToast("A nota é gerada automaticamente para este tipo de documento.");
+        function addInvoiceRow() {
+            if (currentData.items.length >= 18) {
+                showToast("Atingiu o limite máximo de 18 itens para manter o espaço de impressão.", true);
                 return;
             }
-
-            if (currentData.note === null || currentData.note === undefined || currentData.note === "") {
-                currentData.note = " ";
-            } else {
-                currentData.note = "";
-            }
+            currentData.items.push({ code: "", description: "", qty: 1, unit: "UN", price: 0, discount: 0, vatRate: 16 });
             renderInvoice();
-            const noteEl = document.getElementById('invoiceNote');
-            if (currentData.note && noteEl) noteEl.focus();
-        }
-
-        function updateNoteField(val) {
-            currentData.note = val;
-        }
-
-        function addInvoiceRow() {
-            if (!currentUser.loggedIn) return;
-            currentData.items.push({ code: "00" + (currentData.items.length + 1), description: "Novo Artigo ou Serviço", qty: 1, unit: "UN", price: 1000, discount: 0, vatRate: 16 });
-            renderInvoice();
-            showToast("Item adicionado com sucesso.");
         }
 
         function removeInvoiceItem(index) {
-            if (!currentUser.loggedIn) return;
             currentData.items.splice(index, 1);
             renderInvoice();
-            showToast("Item removido com sucesso.");
+        }
+
+        function updateTotals(field, value) {
+            const val = parseNumber(value);
+            if (field === 'discount') {
+                currentData.totalDiscounts = val;
+            } else if (field === 'advance') {
+                currentData.totalAdvance = val;
+            }
+            renderInvoice();
+        }
+
+        function updateNoteField(value) {
+            currentData.note = value;
         }
 
         function toggleVatMode() {
             isVatIncluded = !isVatIncluded;
-            const btn = document.getElementById('vatModeBtn');
-            if (btn) btn.innerHTML = isVatIncluded ? '<i class="fa-solid fa-calculator"></i> Total c/ IVA' : '<i class="fa-solid fa-calculator"></i> Total s/ IVA';
             renderInvoice();
-            showToast(isVatIncluded ? "Modo: IVA incluído no valor." : "Modo: IVA adicionado ao total.");
-        }
-
-        function syncCurrency(val) {
-            currentData.docCurrency = val.toUpperCase();
-            renderInvoice();
+            showToast(`Cálculo de IVA alterado para: ${isVatIncluded ? 'Incluído' : 'Acrescido'}`);
         }
 
         function updateDocType(type) {
-            const wasReceiptOrInvoiceReceipt = currentData.docType === 'Recibo' || currentData.docType === 'Factura-Recibo';
-            const isReceiptOrInvoiceReceipt = type === 'Recibo' || type === 'Factura-Recibo';
-
-            if (!wasReceiptOrInvoiceReceipt && isReceiptOrInvoiceReceipt) {
-                previousUserNote = currentData.note || "";
-                // Clear discounts and advances when switching to receipt/invoice-receipt
-                currentData.totalDiscounts = 0;
-                currentData.totalAdvance = 0;
-                currentData.items.forEach(item => item.discount = 0);
-            } else if (wasReceiptOrInvoiceReceipt && !isReceiptOrInvoiceReceipt) {
-                currentData.note = previousUserNote;
-            }
-
             currentData.docType = type;
-            const displayEl = document.getElementById('docTypePrintDisplay');
-            if (displayEl) displayEl.innerText = type;
-
             renderInvoice();
         }
 
-        function handleDateClick(fieldId, event) {
-            if (!currentUser.loggedIn) return;
-            targetDateField = fieldId;
-            
-            const dateStr = document.getElementById(fieldId).innerText;
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                currentCalendarDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T12:00:00`);
-            } else {
-                currentCalendarDate = new Date();
-            }
-            
-            renderCalendarDays();
-            document.getElementById('calendarModal').classList.remove('hidden');
-        }
-
-        function renderCalendarDays() {
-            const monthYearEl = document.getElementById('calendarMonthYear');
-            const daysGrid = document.getElementById('calendarDaysGrid');
-            
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            
-            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            monthYearEl.innerText = `${monthNames[month]} ${year}`;
-            
-            daysGrid.innerHTML = '';
-            
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            for (let i = 0; i < firstDay; i++) {
-                daysGrid.innerHTML += `<div></div>`;
-            }
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const isToday = new Date().toDateString() === new Date(year, month, i).toDateString();
-                const btnClass = isToday 
-                    ? "bg-cyan-600 text-white font-bold rounded hover:bg-cyan-500 py-1 cursor-pointer transition shadow" 
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white rounded py-1 cursor-pointer transition";
-                    
-                daysGrid.innerHTML += `<div class="${btnClass}" onclick="selectCalendarDate(${i})">${i}</div>`;
-            }
-        }
-
-        function changeCalendarMonth(offset) {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
-            renderCalendarDays();
-        }
-
-        function selectCalendarDate(day) {
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            const dateObj = new Date(year, month, day);
-            
-            const formatted = String(dateObj.getDate()).padStart(2, '0') + '/' + String(dateObj.getMonth() + 1).padStart(2, '0') + '/' + dateObj.getFullYear();
-            
-            currentData[targetDateField] = formatted;
+        function syncCurrency(val) {
+            currentData.docCurrency = val;
             renderInvoice();
-            closeCalendarModal();
-            showToast("Data alterada com sucesso.");
         }
 
-        function closeCalendarModal() {
-            document.getElementById('calendarModal').classList.add('hidden');
-        }
-
-        function openUserMgmtModal() {
-            const modal = document.getElementById('userMgmtModal');
-            if (modal) modal.classList.remove('hidden');
-            renderUserMgmtTable();
-        }
-        function closeUserMgmtModal() {
-            const modal = document.getElementById('userMgmtModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function renderUserMgmtTable() {
-            const tbody = document.getElementById('userMgmtTableBody');
-            const countText = document.getElementById('userCountText');
-            if(!tbody) return;
+        function renderBanks() {
+            const container = document.getElementById('banksContainer');
+            if (!container) return;
+            container.innerHTML = '';
             
-            tbody.innerHTML = '';
-            if(countText) countText.innerText = systemUsers.length;
-
-            systemUsers.forEach(u => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="p-3 font-semibold text-cyan-100">${u.username}</td>
-                        <td class="p-3 text-slate-400">${u.email}</td>
-                        <td class="p-3 uppercase text-[10px]"><span class="${u.role === 'admin' ? 'bg-amber-900/50 text-amber-300' : 'bg-cyan-900/50 text-cyan-300'} px-2 py-1 rounded font-bold">${u.role}</span></td>
-                        <td class="p-3 font-mono text-cyan-200">${u.expiryDate}</td>
-                        <td class="p-3 text-center"><span class="bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded font-bold text-[10px] uppercase">${u.status}</span></td>
-                        <td class="p-3 text-center">
-                            <button disabled class="text-slate-500 cursor-not-allowed hover:text-white transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                        </td>
-                    </tr>
+            currentData.banks.forEach((bank, idx) => {
+                const bDiv = document.createElement('div');
+                bDiv.className = 'text-[8.5pt] border-l-2 border-[#007b85] pl-2 relative group';
+                bDiv.innerHTML = `
+                    <p><span class="font-bold text-[#007b85]">Banco:</span> <span contenteditable="${currentUser.role==='admin'}" onblur="updateBank(${idx}, 'bankName', this.innerText)" class="outline-none editable-field">${bank.bankName}</span></p>
+                    <p><span class="font-bold text-[#007b85]">Conta:</span> <span contenteditable="${currentUser.role==='admin'}" onblur="updateBank(${idx}, 'account', this.innerText)" class="outline-none editable-field">${bank.account}</span></p>
+                    <p><span class="font-bold text-[#007b85]">NIB:</span> <span contenteditable="${currentUser.role==='admin'}" onblur="updateBank(${idx}, 'nib', this.innerText)" class="outline-none editable-field">${bank.nib}</span></p>
+                    <p><span class="font-bold text-[#007b85]">Titular:</span> <span contenteditable="${currentUser.role==='admin'}" onblur="updateBank(${idx}, 'holder', this.innerText)" class="outline-none editable-field">${bank.holder}</span></p>
+                    ${currentUser.role==='admin' ? `
+                    <button onclick="removeBankRow(${idx})" class="no-print absolute -right-2 top-0 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition p-1">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>` : ''}
                 `;
+                container.appendChild(bDiv);
             });
         }
 
+        function updateBank(index, field, value) {
+            if (currentData.banks[index]) {
+                currentData.banks[index][field] = value.trim();
+            }
+        }
+
+        function addBankRow() {
+            if (currentUser.role !== 'admin') return;
+            currentData.banks.push({ bankName: "Novo Banco", account: "-", nib: "-", holder: currentData.company.name });
+            renderInvoice();
+        }
+
+        function removeBankRow(index) {
+            if (currentUser.role !== 'admin') return;
+            currentData.banks.splice(index, 1);
+            renderInvoice();
+        }
+
+        function setupEditableFields() {
+            const fieldsMap = [
+                { id: 'companyName', obj: 'company', key: 'name' },
+                { id: 'companyAddress', obj: 'company', key: 'address' },
+                { id: 'companyProvince', obj: 'company', key: 'province' },
+                { id: 'companyPhone', obj: 'company', key: 'phone' },
+                { id: 'companyNuit', obj: 'company', key: 'nuit' },
+                { id: 'companyEmail', obj: 'company', key: 'email' },
+                { id: 'customerName', directKey: 'customerName' },
+                { id: 'customerAddress', directKey: 'customerAddress' },
+                { id: 'customerTaxId', directKey: 'customerTaxId' },
+                { id: 'customerDisc', directKey: 'customerDisc' },
+                { id: 'paymentTerms', directKey: 'paymentTerms' },
+                { id: 'financialDisc', directKey: 'financialDisc' },
+                { id: 'salesZone', directKey: 'salesZone' },
+                { id: 'salesPerson', directKey: 'salesPerson' },
+                { id: 'docNumber', directKey: 'docNumber' },
+                { id: 'docRequisicao', directKey: 'docRequisicao' },
+                { id: 'docExchangeRate', directKey: 'docExchangeRate' },
+                { id: 'vatExemptionReason', directKey: 'vatExemptionReason' },
+                { id: 'signatureLabel', directKey: 'signatureLabel' }
+            ];
+
+            fieldsMap.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    el.addEventListener('blur', () => {
+                        const val = el.innerText.trim();
+                        if (item.obj) {
+                            currentData[item.obj][item.key] = val;
+                        } else if (item.directKey) {
+                            currentData[item.directKey] = val;
+                        }
+                    });
+                }
+            });
+        }
+
+        function updateUIPermissions() {
+            const editableEls = document.querySelectorAll('.editable-field');
+            editableEls.forEach(el => {
+                el.setAttribute('contenteditable', currentUser.loggedIn ? 'true' : 'false');
+            });
+
+            const docTypeSelect = document.getElementById('docTypeSelect');
+            if (docTypeSelect) docTypeSelect.disabled = !currentUser.loggedIn;
+
+            const inputs = document.querySelectorAll('.input-cell');
+            inputs.forEach(inp => {
+                if (inp.id !== 'totalDiscounts' && inp.id !== 'totalAdvance' && inp.id !== 'invoiceNote') {
+                    inp.disabled = !currentUser.loggedIn;
+                }
+            });
+
+            const totDiscInput = document.getElementById('totalDiscounts');
+            const totAdvInput = document.getElementById('totalAdvance');
+            if (totDiscInput) totDiscInput.disabled = !currentUser.loggedIn;
+            if (totAdvInput) totAdvInput.disabled = !currentUser.loggedIn;
+
+            const adminMgmtBtn = document.getElementById('adminMgmtBtn');
+            const logoUploadBtn = document.getElementById('logoUploadBtn');
+            const addBankBtn = document.getElementById('addBankBtn');
+
+            if (adminMgmtBtn) adminMgmtBtn.style.display = (currentUser.loggedIn && currentUser.role === 'admin') ? 'flex' : 'none';
+            if (logoUploadBtn) logoUploadBtn.style.display = (currentUser.loggedIn && currentUser.role === 'admin') ? 'flex' : 'none';
+            if (addBankBtn) addBankBtn.style.display = (currentUser.loggedIn && currentUser.role === 'admin') ? 'flex' : 'none';
+
+            const nameEl = document.getElementById('currentUserName');
+            const roleBadge = document.getElementById('currentUserRoleBadge');
+            const authBtn = document.getElementById('authBtn');
+
+            if (nameEl) nameEl.innerText = currentUser.username;
+            if (roleBadge) {
+                if (currentUser.loggedIn) {
+                    roleBadge.innerText = currentUser.role.toUpperCase();
+                    roleBadge.className = currentUser.role === 'admin' 
+                        ? 'bg-amber-950 text-amber-300 border border-amber-600/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase'
+                        : 'bg-cyan-950 text-cyan-300 border border-cyan-700/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase';
+                } else {
+                    roleBadge.innerText = 'Sem Acesso';
+                    roleBadge.className = 'bg-slate-800 text-slate-400 border border-slate-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase';
+                }
+            }
+
+            if (authBtn) {
+                authBtn.innerHTML = currentUser.loggedIn 
+                    ? `<i class="fa-solid fa-right-from-bracket text-pink-300"></i> Sair (${currentUser.username})` 
+                    : `<i class="fa-solid fa-right-to-bracket text-cyan-200"></i> Login / Cadastro`;
+                authBtn.onclick = currentUser.loggedIn ? handleLogout : openLoginModal;
+            }
+
+            renderInvoice();
+        }
+
         function openLoginModal() {
-            const modal = document.getElementById('loginModal');
-            if (modal) modal.classList.remove('hidden');
-            const err1 = document.getElementById('loginErrorMsg');
-            if (err1) err1.classList.add('hidden');
-            const err2 = document.getElementById('registerErrorMsg');
-            if (err2) err2.classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+            switchAuthTab('login');
         }
 
         function closeLoginModal() {
-            const modal = document.getElementById('loginModal');
-            if (modal) modal.classList.add('hidden');
-        }
-        
-        function logoutUser() {
-            currentUser = { username: "Visitante", role: "guest", loggedIn: false };
-            updateUIPermissions();
-            renderInvoice();
-            showToast("Sessão terminada com sucesso.");
+            document.getElementById('loginModal').classList.add('hidden');
         }
 
         function switchAuthTab(tab) {
@@ -1540,425 +1611,400 @@
             const regForm = document.getElementById('registerFormContainer');
             const tabLogin = document.getElementById('tabLoginBtn');
             const tabReg = document.getElementById('tabRegisterBtn');
-            const title = document.getElementById('authModalTitle');
-            const subtitle = document.getElementById('authModalSubtitle');
 
             if (tab === 'login') {
-                if (loginForm) loginForm.classList.remove('hidden');
-                if (regForm) regForm.classList.add('hidden');
-                if (tabLogin) tabLogin.className = "flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow";
-                if (tabReg) tabReg.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
-                if (title) title.innerText = "Painel de Acesso Espacial";
-                if (subtitle) subtitle.innerText = "Identifique-se para gerenciar o sistema";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                tabLogin.className = "flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow";
+                tabReg.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
             } else {
-                if (loginForm) loginForm.classList.add('hidden');
-                if (regForm) regForm.classList.remove('hidden');
-                if (tabReg) tabReg.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition shadow";
-                if (tabLogin) tabLogin.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
-                if (title) title.innerText = "Registo de Nova Conta";
-                if (subtitle) subtitle.innerText = "Cadastre um novo operador";
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                tabReg.className = "flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow";
+                tabLogin.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
             }
         }
 
         function handleLoginSubmit(event) {
             event.preventDefault();
-            const usernameEl = document.getElementById('loginUsername');
-            const passwordEl = document.getElementById('loginPassword');
-            if (!usernameEl || !passwordEl) return;
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPassword').value;
 
-            const usernameInput = usernameEl.value.trim().toLowerCase();
-            const modalBox = document.getElementById('loginModalCard');
-            const errorBox = document.getElementById('loginErrorMsg');
+            const user = systemUsers.find(u => u.username.toLowerCase() === username);
 
-            const foundUser = systemUsers.find(u => u.username.toLowerCase() === usernameInput);
-
-            if (foundUser) {
-                const todayStr = new Date().toISOString().split('T')[0];
-                if (foundUser.expiryDate && foundUser.expiryDate < todayStr) {
-                    if (modalBox) modalBox.classList.add('animate-neon-error');
-                    if (errorBox) {
-                        errorBox.classList.remove('hidden');
-                        errorBox.innerText = `A licença deste utilizador expirou em ${foundUser.expiryDate}!`;
-                    }
-                    setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+            if (user && pass.length >= 6) {
+                const today = new Date().toISOString().split('T')[0];
+                if (user.expiryDate && user.expiryDate < today) {
+                    showToast("Licença de utilizador expirada! Contacte o Administrador.", true);
+                    return;
+                }
+                if (user.status !== "Ativo") {
+                    showToast("Conta de utilizador inativa.", true);
                     return;
                 }
 
-                if (modalBox) modalBox.classList.add('animate-neon-success');
-                if (errorBox) errorBox.classList.add('hidden');
-
-                currentUser = { username: foundUser.username, role: foundUser.role, loggedIn: true };
-
-                setTimeout(() => {
-                    if (modalBox) modalBox.classList.remove('animate-neon-success');
-                    closeLoginModal();
-                    updateUIPermissions();
-                    renderInvoice();
-                    showToast(`Bem-vindo, ${currentUser.username}!`);
-                }, 1000);
+                currentUser = { username: user.username, role: user.role, loggedIn: true };
+                closeLoginModal();
+                updateUIPermissions();
+                showToast(`Bem-vindo, ${user.username.toUpperCase()}! Acesso concedido.`);
             } else {
-                if (modalBox) modalBox.classList.add('animate-neon-error');
-                if (errorBox) {
-                    errorBox.classList.remove('hidden');
-                    errorBox.innerText = "Utilizador ou palavra-passe incorretos.";
-                }
-                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+                document.getElementById('loginErrorMsg').classList.remove('hidden');
             }
         }
 
         function handleRegisterSubmit(event) {
             event.preventDefault();
-            const modalBox = document.getElementById('loginModalCard');
-            const errorBox = document.getElementById('registerErrorMsg');
-
-            if (systemUsers.length >= 5) {
-                if (modalBox) modalBox.classList.add('animate-neon-error');
-                if (errorBox) {
-                    errorBox.classList.remove('hidden');
-                    errorBox.innerText = "Limite de utilizadores atingido (Máx 5).";
-                }
-                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
-                return;
-            }
-
             const username = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
-            const expiryDate = document.getElementById('regExpiryDate').value;
-            
-            if(systemUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-                if (modalBox) modalBox.classList.add('animate-neon-error');
-                if (errorBox) {
-                    errorBox.classList.remove('hidden');
-                    errorBox.innerText = "Nome de utilizador já existe.";
-                }
-                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+            const pass = document.getElementById('regPassword').value;
+
+            if (systemUsers.length >= 5) {
+                showToast("Limite máximo de 5 utilizadores atingido.", true);
                 return;
             }
 
+            if (systemUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showToast("Nome de utilizador já existente.", true);
+                return;
+            }
+
+            const expiry = new Date();
+            expiry.setFullYear(expiry.getFullYear() + 1);
+            const expiryStr = expiry.toISOString().split('T')[0];
+
             const newUser = {
-                id: systemUsers.length + 1,
+                id: Date.now(),
                 username: username,
                 email: email,
                 role: "editor",
-                expiryDate: expiryDate,
+                expiryDate: expiryStr,
                 status: "Ativo"
             };
 
             systemUsers.push(newUser);
+            saveUserLicenses();
 
-            if (modalBox) modalBox.classList.add('animate-neon-success');
-            if (errorBox) errorBox.classList.add('hidden');
-
-            setTimeout(() => {
-                if (modalBox) modalBox.classList.remove('animate-neon-success');
-                switchAuthTab('login');
-                showToast("Conta criada com sucesso! Faça login.");
-            }, 1000);
+            currentUser = { username: newUser.username, role: newUser.role, loggedIn: true };
+            closeLoginModal();
+            updateUIPermissions();
+            showToast(`Conta cadastrada com sucesso! Válida até ${expiryStr}`);
         }
 
-        function updateUIPermissions() {
-            const roleBadge = document.getElementById('currentUserRoleBadge');
-            const usernameDisp = document.getElementById('currentUserName');
-            const roleIcon = document.getElementById('userRoleIcon');
-            const pill = document.getElementById('currentUserPill');
-            const authBtn = document.getElementById('authBtn');
-            const adminBtn = document.getElementById('adminMgmtBtn');
-            const logoBtn = document.getElementById('logoUploadBtn');
-            
-            const vatModeBtn = document.getElementById('vatModeBtn');
-            const importBtn = document.getElementById('importJsonBtn');
-            const saveBtn = document.getElementById('saveDocBtn');
-            const printBtn = document.getElementById('printDocBtn');
-            const docTypeSelect = document.getElementById('docTypeSelect');
+        function handleLogout() {
+            currentUser = { username: "Visitante", role: "guest", loggedIn: false };
+            updateUIPermissions();
+            showToast("Sessão encerrada com sucesso.");
+        }
 
-            const editables = document.querySelectorAll('.editable-field');
-            
-            if (currentUser.loggedIn) {
-                if (usernameDisp) usernameDisp.innerText = currentUser.username;
-                if (authBtn) authBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket text-pink-200"></i> Sair';
-                if (authBtn) authBtn.onclick = logoutUser;
-                if (authBtn) authBtn.className = "bg-pink-900/60 hover:bg-pink-800 text-pink-100 px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition border border-pink-500/50 shadow-[0_0_10px_rgba(236,72,153,0.3)] whitespace-nowrap";
-                
-                if (pill) pill.className = "flex items-center gap-1.5 bg-slate-900/90 border border-emerald-500/40 px-3 py-1.5 rounded-full text-[11px] shadow-[0_0_10px_rgba(16,185,129,0.2)]";
-                if (roleIcon) roleIcon.className = "fa-solid fa-user-check text-emerald-400";
-                if (usernameDisp) usernameDisp.className = "font-bold text-emerald-300";
+        function openUserMgmtModal() {
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
+            renderUserMgmtTable();
+            document.getElementById('userMgmtModal').classList.remove('hidden');
+        }
 
-                if (vatModeBtn) vatModeBtn.disabled = false;
-                if (importBtn) importBtn.disabled = false;
-                if (saveBtn) saveBtn.disabled = false;
-                if (printBtn) printBtn.disabled = false;
-                if (docTypeSelect) docTypeSelect.disabled = false;
+        function closeUserMgmtModal() {
+            document.getElementById('userMgmtModal').classList.add('hidden');
+        }
 
-                editables.forEach(el => {
-                    if(el.id !== 'signatureLabel' || currentUser.role === 'admin') {
-                        el.setAttribute('contenteditable', 'true');
-                    }
-                });
+        function renderUserMgmtTable() {
+            const tbody = document.getElementById('userMgmtTableBody');
+            const countText = document.getElementById('userCountText');
+            if (!tbody) return;
 
-                if (currentUser.role === 'admin') {
-                    if (roleBadge) { roleBadge.innerText = "ADMIN"; roleBadge.className = "bg-amber-900 text-amber-300 border border-amber-500/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
-                    if (adminBtn) adminBtn.classList.remove('hidden');
-                    if (logoBtn) logoBtn.classList.remove('hidden');
-                    const addBankBtn = document.getElementById('addBankBtn');
-                    if (addBankBtn) addBankBtn.classList.remove('hidden');
-                } else {
-                    if (roleBadge) { roleBadge.innerText = "EDITOR"; roleBadge.className = "bg-emerald-900 text-emerald-300 border border-emerald-500/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
-                    if (adminBtn) adminBtn.classList.add('hidden');
-                    if (logoBtn) logoBtn.classList.add('hidden');
-                    const addBankBtn = document.getElementById('addBankBtn');
-                    if (addBankBtn) addBankBtn.classList.add('hidden');
-                }
-            } else {
-                if (usernameDisp) usernameDisp.innerText = "Visitante";
-                if (roleBadge) { roleBadge.innerText = "Sem Acesso"; roleBadge.className = "bg-cyan-950 text-cyan-300 border border-cyan-700/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
-                
-                if (authBtn) authBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket text-cyan-200"></i> Login / Cadastro';
-                if (authBtn) authBtn.onclick = openLoginModal;
-                if (authBtn) authBtn.className = "bg-cyan-600/80 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(0,243,255,0.4)] border border-cyan-400/60 whitespace-nowrap";
-                
-                if (pill) pill.className = "flex items-center gap-1.5 bg-slate-900/90 border border-cyan-500/40 px-3 py-1.5 rounded-full text-[11px] shadow-[0_0_10px_rgba(0,243,255,0.2)]";
-                if (roleIcon) roleIcon.className = "fa-solid fa-circle-user text-cyan-400";
-                if (usernameDisp) usernameDisp.className = "font-semibold text-cyan-200";
+            tbody.innerHTML = '';
+            countText.innerText = systemUsers.length;
 
-                if (adminBtn) adminBtn.classList.add('hidden');
-                if (logoBtn) logoBtn.classList.add('hidden');
+            systemUsers.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-cyan-200">${u.username}</td>
+                    <td class="p-3 text-slate-300">${u.email}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-amber-950 text-amber-300 border border-amber-600/50' : 'bg-cyan-950 text-cyan-300 border border-cyan-700/50'}">${u.role.toUpperCase()}</span></td>
+                    <td class="p-3">
+                        <input type="date" value="${u.expiryDate}" onchange="updateUserExpiry(${u.id}, this.value)" class="bg-slate-950 text-cyan-100 px-2 py-1 rounded border border-cyan-500/40 outline-none text-xs">
+                    </td>
+                    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.status === 'Ativo' ? 'bg-emerald-950 text-emerald-300 border border-emerald-600/50' : 'bg-pink-950 text-pink-300 border border-pink-600/50'}">${u.status}</span></td>
+                    <td class="p-3 text-center">
+                        ${u.role !== 'admin' ? `
+                        <button onclick="toggleUserStatus(${u.id})" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[10px] rounded border border-cyan-500/30 transition">
+                            ${u.status === 'Ativo' ? 'Desativar' : 'Ativar'}
+                        </button>` : '<span class="text-slate-500 text-[10px]">Admin Principal</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
-                if (vatModeBtn) vatModeBtn.disabled = true;
-                if (importBtn) importBtn.disabled = true;
-                if (saveBtn) saveBtn.disabled = true;
-                if (printBtn) printBtn.disabled = true;
-                if (docTypeSelect) docTypeSelect.disabled = true;
-
-                editables.forEach(el => el.setAttribute('contenteditable', 'false'));
-                const addBankBtn = document.getElementById('addBankBtn');
-                if (addBankBtn) addBankBtn.classList.add('hidden');
+        function updateUserExpiry(userId, newDate) {
+            const user = systemUsers.find(u => u.id === userId);
+            if (user) {
+                user.expiryDate = newDate;
+                saveUserLicenses();
+                showToast(`Validade de ${user.username} atualizada para ${newDate}`);
             }
         }
 
-        function showToast(message) {
-            const toast = document.getElementById('toastNotification');
-            const msgEl = document.getElementById('toastMessage');
-            if (!toast || !msgEl) return;
-            msgEl.innerText = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function triggerPrintAndSave() {
-            if (!currentUser.loggedIn) return;
-            window.print();
-        }
-
-        function exportInvoiceToJSON() {
-            const dataStr = JSON.stringify(currentData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Factura_${currentData.docNumber.replace(/\//g, '-')}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast("Backup descarregado com sucesso.");
-        }
-
-        function triggerImportJSON() {
-            if (!currentUser.loggedIn) return;
-            document.getElementById('importJsonFileInput').click();
-        }
-
-        function handleImportJSON(event) {
-            if (!currentUser.loggedIn) return;
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (importedData && importedData.docNumber) {
-                        currentData = importedData;
-                        renderInvoice();
-                        showToast("Dados importados com sucesso!");
-                    } else {
-                        showToast("Ficheiro inválido.");
-                    }
-                } catch (err) {
-                    showToast("Erro ao ler ficheiro.");
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = ''; 
+        function toggleUserStatus(userId) {
+            const user = systemUsers.find(u => u.id === userId);
+            if (user) {
+                user.status = user.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                saveUserLicenses();
+                renderUserMgmtTable();
+                showToast(`Estado de ${user.username} alterado para ${user.status}`);
+            }
         }
 
         async function saveInvoiceToSupabase() {
             if (!currentUser.loggedIn) {
-                showToast("Erro: Inicie sessão para guardar na base de dados.");
+                showToast("Efetue login para guardar o documento no Supabase.", true);
+                openLoginModal();
                 return;
             }
             if (!supabaseClient) {
-                showToast("Erro: Cliente Supabase não inicializado.");
+                showToast("Erro: Conexão Supabase indisponível.", true);
                 return;
             }
 
             showToast("A guardar documento no Supabase...");
-            const btn = document.getElementById('saveDocBtn');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A guardar...';
-            btn.disabled = true;
-
             try {
-                const invoicePayload = {
+                const payload = {
                     doc_number: currentData.docNumber,
                     doc_type: currentData.docType,
                     doc_date: currentData.docDate,
+                    doc_due_date: currentData.docDueDate,
                     customer_name: currentData.customerName,
-                    total_amount: parseFloat(document.getElementById('totalInvoice').innerText.replace(/\./g, '').replace(',', '.')),
-                    invoice_data: currentData,
-                    created_by: currentUser.username
+                    total_amount: parseNumber(document.getElementById('totalInvoice').innerText),
+                    data_json: currentData,
+                    created_at: new Date().toISOString()
                 };
 
-                const { data, error } = await supabaseClient
-                    .from('facturas')
-                    .upsert(invoicePayload, { onConflict: 'doc_number' });
-
+                const { error } = await supabaseClient.from('facturas').upsert(payload, { onConflict: 'doc_number' });
                 if (error) throw error;
-                
-                showToast("Documento guardado com sucesso na Base de Dados!");
+
+                showToast("Documento guardado com sucesso na base de dados!");
                 loadSupabaseHistoryCount();
             } catch (err) {
-                console.error("Erro Supabase:", err);
-                showToast("Erro ao guardar: " + err.message);
-            } finally {
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
+                console.error("Erro ao guardar no Supabase:", err);
+                showToast("Erro ao guardar documento no Supabase.", true);
             }
         }
 
         async function loadSupabaseHistoryCount() {
             if (!supabaseClient) return;
             try {
-                const { count, error } = await supabaseClient
-                    .from('facturas')
-                    .select('*', { count: 'exact', head: true });
-                    
-                if (error) throw error;
-                const badge = document.getElementById('historyBadge');
-                if (badge) badge.innerText = count || 0;
-            } catch(e) {
-                console.log("Erro contagem: ", e.message);
+                const { count, error } = await supabaseClient.from('facturas').select('*', { count: 'exact', head: true });
+                if (!error && count !== null) {
+                    const badge = document.getElementById('historyBadge');
+                    if (badge) badge.innerText = count;
+                }
+            } catch (e) {
+                console.log("Histórico count indisponível");
             }
         }
 
-        function openHistoryModal() {
-            const modal = document.getElementById('historyModal');
-            if (modal) modal.classList.remove('hidden');
-            loadHistoryList();
-        }
-
-        function closeHistoryModal() {
-            const modal = document.getElementById('historyModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        async function loadHistoryList() {
+        async function openHistoryModal() {
+            document.getElementById('historyModal').classList.remove('hidden');
             const container = document.getElementById('historyListContainer');
-            if (!container) return;
+            container.innerHTML = '<div class="text-center py-8 text-cyan-400/70 text-xs"><i class="fa-solid fa-spinner fa-spin mr-2"></i> A carregar do Supabase...</div>';
 
             if (!supabaseClient) {
-                container.innerHTML = '<div class="text-center py-8 text-pink-400 text-xs">Erro: Supabase não conectado.</div>';
+                container.innerHTML = '<div class="text-center py-6 text-pink-400 text-xs">Supabase não conectado.</div>';
                 return;
             }
 
-            container.innerHTML = '<div class="text-center py-8 text-cyan-400/70 text-xs"><i class="fa-solid fa-satellite-dish animate-pulse mb-2 text-xl block"></i> A carregar transmissões...</div>';
-
             try {
-                const { data, error } = await supabaseClient
-                    .from('facturas')
-                    .select('id, doc_number, doc_type, doc_date, customer_name, total_amount, created_at, created_by')
-                    .order('created_at', { ascending: false })
-                    .limit(20);
-
+                const { data, error } = await supabaseClient.from('facturas').select('*').order('created_at', { ascending: false }).limit(20);
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs">Nenhum documento encontrado na base de dados.</div>';
+                    container.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs">Nenhum documento guardado na base de dados.</div>';
                     return;
                 }
 
-                let html = '';
-                data.forEach(inv => {
-                    const dateObj = new Date(inv.created_at);
-                    const dateStr = dateObj.toLocaleDateString('pt-PT') + ' ' + dateObj.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'});
-                    
-                    html += `
-                        <div class="bg-slate-900/60 border border-cyan-500/30 p-3 rounded-xl flex justify-between items-center hover:bg-slate-800/80 transition">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="bg-cyan-900/50 text-cyan-300 px-2 py-0.5 rounded text-[10px] font-bold">${inv.doc_type}</span>
-                                    <span class="font-bold text-sm text-white">${inv.doc_number}</span>
-                                </div>
-                                <div class="text-xs text-slate-300 font-medium">${inv.customer_name}</div>
-                                <div class="text-[10px] text-slate-500 mt-1"><i class="fa-regular fa-clock"></i> ${dateStr} • Por: ${inv.created_by || 'Desconhecido'}</div>
-                            </div>
-                            <div class="flex flex-col items-end gap-2">
-                                <div class="font-bold text-emerald-400 text-sm">${formatNumber(inv.total_amount, 2)} MT</div>
-                                <button onclick="loadInvoiceFromSupabase('${inv.doc_number}')" class="bg-cyan-700 hover:bg-cyan-600 text-white text-[10px] px-3 py-1.5 rounded-lg transition border border-cyan-500 shadow" ${!currentUser.loggedIn ? 'disabled title="Faça login para carregar"' : ''}>
-                                    <i class="fa-solid fa-download"></i> Carregar
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
+                renderHistoryList(data);
             } catch (err) {
-                container.innerHTML = `<div class="text-center py-8 text-pink-400 text-xs">Falha ao carregar dados: ${err.message}</div>`;
+                container.innerHTML = `<div class="text-center py-6 text-pink-400 text-xs">Erro ao carregar histórico: ${err.message}</div>`;
             }
         }
 
-        async function loadInvoiceFromSupabase(docNumber) {
-            if (!currentUser.loggedIn) {
-                showToast("Faça login para carregar documentos.");
-                return;
-            }
+        function closeHistoryModal() {
+            document.getElementById('historyModal').classList.add('hidden');
+        }
 
-            showToast("A transferir dados do Supabase...");
+        function renderHistoryList(records) {
+            const container = document.getElementById('historyListContainer');
+            container.innerHTML = '';
+
+            records.forEach(doc => {
+                const item = document.createElement('div');
+                item.className = 'bg-slate-900/80 border border-cyan-500/30 p-3 rounded-xl flex items-center justify-between hover:border-cyan-400 transition';
+                item.innerHTML = `
+                    <div>
+                        <div class="font-bold text-xs text-cyan-200">${doc.doc_type} Nº ${doc.doc_number}</div>
+                        <div class="text-[11px] text-slate-300">Cliente: ${doc.customer_name} • Data: ${doc.doc_date}</div>
+                        <div class="text-[10px] text-emerald-400 font-semibold">Total: ${formatNumber(Number(doc.total_amount) || 0)} MT</div>
+                    </div>
+                    <button onclick="loadInvoiceFromSupabase('${doc.doc_number}')" class="px-3 py-1.5 bg-cyan-700/80 hover:bg-cyan-600 text-white rounded-lg text-xs font-semibold transition border border-cyan-400/50 flex items-center gap-1">
+                        <i class="fa-solid fa-folder-open"></i> Carregar
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function loadInvoiceFromSupabase(docNum) {
+            if (!supabaseClient) return;
             try {
-                const { data, error } = await supabaseClient
-                    .from('facturas')
-                    .select('invoice_data')
-                    .eq('doc_number', docNumber)
-                    .single();
-
+                const { data, error } = await supabaseClient.from('facturas').select('data_json').eq('doc_number', docNum).single();
                 if (error) throw error;
-                if (data && data.invoice_data) {
-                    currentData = data.invoice_data;
+                if (data && data.data_json) {
+                    currentData = data.data_json;
                     renderInvoice();
                     closeHistoryModal();
-                    showToast(`Documento ${docNumber} carregado com sucesso!`);
+                    showToast(`Documento ${docNum} carregado do Supabase!`);
                 }
             } catch (err) {
-                console.error("Erro ao carregar:", err);
-                showToast("Erro ao carregar documento.");
+                showToast("Erro ao carregar documento.", true);
             }
         }
 
-        function addBankRow() {
-            if (currentUser.role !== 'admin') return;
-            currentData.banks.push({ bankName: "Novo Banco", account: "0000", nib: "0000", holder: currentData.company.name });
-            renderInvoice();
-            showToast("Nova conta bancária adicionada.");
+        function exportInvoiceToJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Factura_${currentData.docNumber.replace(/\//g, '_')}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Backup JSON exportado com sucesso!");
         }
 
-        function removeBankRow(index) {
-            if (currentUser.role !== 'admin') return;
-            currentData.banks.splice(index, 1);
-            renderInvoice();
-            showToast("Conta bancária removida.");
+        function triggerImportJSON() {
+            if (!currentUser.loggedIn) {
+                showToast("Efetue login para importar backups.", true);
+                openLoginModal();
+                return;
+            }
+            document.getElementById('importJsonFileInput').click();
         }
 
+        function handleImportJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported && imported.items) {
+                        currentData = imported;
+                        renderInvoice();
+                        showToast("Documento JSON importado com sucesso!");
+                    } else {
+                        showToast("Ficheiro JSON inválido.", true);
+                    }
+                } catch (err) {
+                    showToast("Erro ao ler o ficheiro JSON.", true);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function handleDateClick(fieldId, event) {
+            if (!currentUser.loggedIn) {
+                showToast("Efetue login para alterar datas.", true);
+                openLoginModal();
+                return;
+            }
+            targetDateField = fieldId;
+            openCalendarModal();
+        }
+
+        function openCalendarModal() {
+            document.getElementById('calendarModal').classList.remove('hidden');
+            renderCalendar();
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+
+        function changeCalendarMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthYearEl = document.getElementById('calendarMonthYear');
+            const gridEl = document.getElementById('calendarDaysGrid');
+            if (!monthYearEl || !gridEl) return;
+
+            const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            monthYearEl.innerText = `${months[month]} ${year}`;
+            gridEl.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                gridEl.appendChild(document.createElement('div'));
+            }
+
+            for (let d = 1; d <= totalDays; d++) {
+                const dayBtn = document.createElement('button');
+                dayBtn.className = "py-1.5 hover:bg-cyan-600 rounded-lg text-slate-200 hover:text-white transition font-medium";
+                dayBtn.innerText = d;
+                dayBtn.onclick = () => selectDate(d, month + 1, year);
+                gridEl.appendChild(dayBtn);
+            }
+        }
+
+        function selectDate(day, month, year) {
+            const formatted = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+            if (targetDateField === 'docDate') {
+                currentData.docDate = formatted;
+            } else if (targetDateField === 'docDueDate') {
+                currentData.docDueDate = formatted;
+            }
+            renderInvoice();
+            closeCalendarModal();
+            showToast(`Data alterada para: ${formatted}`);
+        }
+
+        function triggerPrintAndSave() {
+            if (currentUser.loggedIn && supabaseClient) {
+                saveInvoiceToSupabase();
+            }
+            window.print();
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+
+            if (!toast || !msgEl) return;
+
+            msgEl.innerText = msg;
+            if (isError) {
+                toast.className = "no-print fixed bottom-5 right-5 z-[999] bg-pink-950/95 text-white px-4 py-3 rounded-xl shadow-2xl border border-pink-500/50 text-xs flex items-center gap-3 animate-neon-error backdrop-blur-md";
+                iconEl.className = "fa-solid fa-triangle-exclamation text-pink-400 text-sm neon-glow-pink";
+            } else {
+                toast.className = "no-print fixed bottom-5 right-5 z-[999] bg-slate-900/95 text-white px-4 py-3 rounded-xl shadow-2xl border border-cyan-500/50 text-xs flex items-center gap-3 backdrop-blur-md";
+                iconEl.className = "fa-solid fa-circle-check text-cyan-400 text-sm neon-glow-cyan";
+            }
+
+            toast.style.transform = "translateY(0)";
+            toast.style.opacity = "1";
+
+            setTimeout(() => {
+                toast.style.transform = "translateY(5rem)";
+                toast.style.opacity = "0";
+            }, 3500);
+        }
     </script>
 </body>
 </html>
