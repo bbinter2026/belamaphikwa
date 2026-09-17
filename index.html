@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura Pró-Forma / Documento Comercial - BELLA MAPIKWA SBRAY, EI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Liberation+Sans:wght@400;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        @page {
+            size: 8.27in 11.69in;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, Tahoma, 'Liberation Sans', sans-serif;
+            color: #000000;
+            background-color: #070913;
+            background-image: radial-gradient(circle at 50% 30%, #101c38 0%, #05070c 70%, #020305 100%);
+            background-attachment: fixed;
+            line-height: 1.15;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            margin: 0;
+            padding: 0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .neon-glow-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.4); }
+        .neon-glow-pink { text-shadow: 0 0 8px rgba(255, 0, 128, 0.7), 0 0 20px rgba(255, 0, 128, 0.4); }
+        .neon-glow-green { text-shadow: 0 0 8px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.4); }
+        .neon-border-cyan { border: 1px solid rgba(0, 243, 255, 0.6); box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.2); }
+        .neon-card-bg { background: rgba(10, 15, 30, 0.85); backdrop-filter: blur(12px); }
+
+        @keyframes neonSuccessPulse {
+            0% { box-shadow: 0 0 5px rgba(0,255,136,0.5), inset 0 0 5px rgba(0,255,136,0.3); border-color: rgba(0,255,136,0.5); }
+            50% { box-shadow: 0 0 25px rgba(0,255,136,0.9), 0 0 40px rgba(0,255,136,0.6), inset 0 0 15px rgba(0,255,136,0.5); border-color: rgba(0,255,136,1); }
+            100% { box-shadow: 0 0 5px rgba(0,255,136,0.5), inset 0 0 5px rgba(0,255,136,0.3); border-color: rgba(0,255,136,0.5); }
+        }
+        @keyframes neonErrorShake {
+            0%, 100% { transform: translateX(0); box-shadow: 0 0 10px rgba(255,0,85,0.5), inset 0 0 5px rgba(255,0,85,0.2); border-color: rgba(255,0,85,0.6); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+        .animate-neon-success { animation: neonSuccessPulse 1.2s ease-in-out infinite; }
+        .animate-neon-error { animation: neonErrorShake 0.4s ease-in-out; border-color: rgba(255,0,85,1) !important; box-shadow: 0 0 20px rgba(255,0,85,0.8), inset 0 0 10px rgba(255,0,85,0.5) !important; }
+
+        .erp-table { border-collapse: collapse; width: 100%; font-family: 'Segoe UI', Arial, Tahoma, sans-serif; }
+        .erp-table th, .erp-table td { border: 0.5pt solid #333333; padding: 3px 4px; font-size: 8.5pt; height: 0.65cm; }
+
+        .input-cell { background: transparent; width: 100%; border: none; outline: none; font-family: inherit; font-size: inherit; color: inherit; }
+        .input-cell:focus { background-color: #e0f2fe; box-shadow: inset 0 0 0 1px #0284c7; }
+        .input-cell:disabled { background-color: transparent; color: #1e293b; cursor: not-allowed; opacity: 0.95; }
+        
+        .editable-field[contenteditable="true"]:hover { background-color: #f1f5f9; cursor: text; border-radius: 2px; }
+        .editable-field[contenteditable="true"]:focus { background-color: #e0f2fe; outline: 1px solid #0284c7; border-radius: 2px; }
+
+        .items-grid-container {
+            display: flex;
+            flex-direction: column;
+            height: 10.35cm;
+            min-height: 10.35cm;
+            border-top: 1pt solid #000000;
+            border-bottom: 1pt solid #000000;
+            border-left: 0.5pt solid #333333;
+            border-right: 0.5pt solid #333333;
+            position: relative;
+            background: #ffffff;
+        }
+
+        .items-grid-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 50px 32px 85px 42px 42px 95px;
+            border-bottom: 0.5pt solid #333333;
+            font-size: 8.5pt;
+            background-color: #ffffff;
+            position: relative;
+            z-index: 2;
+            height: 0.65cm;
+            align-items: center;
+        }
+
+        .items-grid-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 50px 32px 85px 42px 42px 95px;
+            font-size: 8.5pt;
+            min-height: 0.65cm;
+            position: relative;
+        }
+
+        .items-col { border-right: 0.5pt solid #333333; padding: 1px 4px; display: flex; align-items: center; }
+        .items-col:last-child { border-right: none; }
+
+        .grid-lines-overlay {
+            display: grid;
+            grid-template-columns: 60px 1fr 50px 32px 85px 42px 42px 95px;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .grid-line-col { border-right: 0.5pt solid #333333; height: 100%; }
+        .grid-line-col:last-child { border-right: none; }
+
+        .logo-box-container { width: 6.2cm; height: 3.2cm; background: #ffffff; border: 0.5pt solid #cbd5e1; }
+        .logo-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+
+        @media print {
+            body { 
+                background: none !important;
+                background-image: none !important;
+                background-color: #ffffff !important;
+            }
+            .no-print { display: none !important; }
+            #invoiceNote { border: none !important; resize: none !important; background: transparent !important; }
+            #printArea {
+                box-shadow: none !important;
+                border: none !important;
+                width: 8.27in !important;
+                height: 11.69in !important;
+                margin: 0 !important;
+                padding: 8mm 10mm !important;
+                background: #ffffff !important;
+            }
+            .editable-field { background: transparent !important; outline: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between">
+
+    <header class="no-print w-full neon-card-bg neon-border-cyan text-white py-3 px-4 sm:py-3.5 sm:px-6 mb-4 shadow-2xl flex justify-between items-center flex-wrap gap-3 rounded-b-xl backdrop-blur-md sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+            <div class="bg-cyan-500/20 text-cyan-300 font-bold px-3 py-1.5 rounded-lg text-xs tracking-wider uppercase border border-cyan-500/50 neon-glow-cyan">
+                <i class="fa-solid fa-meteor mr-1 text-cyan-400"></i> BELLA MAPIKWA
+            </div>
+            <div>
+                <h1 class="font-bold text-xs sm:text-sm leading-tight text-cyan-200 neon-glow-cyan">Sistema Comercial • Espaço Cósmico</h1>
+                <p class="text-[10px] text-slate-300">BELLA MAPIKWA SBRAY, EI • Supabase Sync</p>
+                <p class="text-[9px] text-emerald-400 font-semibold neon-glow-green"><i class="fa-solid fa-satellite-dish mr-1"></i> SUPABASE CONECTADO</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap text-xs">
+            <div id="currentUserPill" class="flex items-center gap-1.5 bg-slate-900/90 border border-cyan-500/40 px-3 py-1.5 rounded-full text-[11px] shadow-[0_0_10px_rgba(0,243,255,0.2)]">
+                <i class="fa-solid fa-circle-user text-cyan-400" id="userRoleIcon"></i>
+                <span id="currentUserName" class="font-semibold text-cyan-200">Visitante</span>
+                <span id="currentUserRoleBadge" class="bg-cyan-950 text-cyan-300 border border-cyan-700/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase">Sem Acesso</span>
+            </div>
+
+            <button id="adminMgmtBtn" onclick="openUserMgmtModal()" class="hidden bg-amber-600/80 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_10px_rgba(245,158,11,0.4)] border border-amber-400/50 whitespace-nowrap">
+                <i class="fa-solid fa-users-gear text-amber-200"></i> Licenças & Admin
+            </button>
+
+            <button id="authBtn" onclick="openLoginModal()" class="bg-cyan-600/80 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(0,243,255,0.4)] border border-cyan-400/60 whitespace-nowrap">
+                <i class="fa-solid fa-right-to-bracket text-cyan-200"></i> Login / Cadastro
+            </button>
+
+            <button id="vatModeBtn" onclick="toggleVatMode()" class="bg-purple-900/60 hover:bg-purple-800 text-purple-200 px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition border border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.3)] whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-calculator"></i> Total c/ IVA
+            </button>
+
+            <button id="logoUploadBtn" onclick="triggerLogoUpload()" class="hidden bg-slate-900/90 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold border border-slate-700 items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-image text-amber-400"></i> Logo
+            </button>
+
+            <button onclick="exportInvoiceToJSON()" class="bg-slate-900/90 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold border border-slate-700 flex items-center gap-1.5 transition whitespace-nowrap" title="Exportar Backup JSON">
+                <i class="fa-solid fa-download text-sky-400"></i> Exportar
+            </button>
+
+            <button id="importJsonBtn" onclick="triggerImportJSON()" class="bg-slate-900/90 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold border border-slate-700 flex items-center gap-1.5 transition whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed" title="Importar Backup JSON">
+                <i class="fa-solid fa-upload text-sky-400"></i> Importar
+            </button>
+            <input type="file" id="importJsonFileInput" accept=".json" class="hidden" onchange="handleImportJSON(event)">
+
+            <button id="saveDocBtn" onclick="saveInvoiceToSupabase()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(0,255,136,0.4)] border border-emerald-400/60 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed" title="Guardar na Base de Dados Supabase">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Guardar (Supabase)
+            </button>
+
+            <button id="printDocBtn" onclick="triggerPrintAndSave()" class="bg-blue-700/80 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(59,130,246,0.4)] border border-blue-400/60 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed" title="Imprimir A4">
+                <i class="fa-solid fa-file-pdf"></i> Imprimir A4
+            </button>
+
+            <button onclick="openHistoryModal()" class="bg-slate-900/90 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold border border-slate-700 flex items-center gap-1.5 relative whitespace-nowrap">
+                <i class="fa-solid fa-database text-emerald-400"></i> Histórico Supabase
+                <span id="historyBadge" class="bg-emerald-600 text-white text-[9px] px-1.5 py-0.2 rounded-full font-bold ml-0.5">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="w-full flex justify-center items-start gap-4 px-2 my-2">
+        <aside class="no-print hidden lg:flex flex-col items-center justify-start w-48 min-h-[600px] bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-2 shadow-xl sticky top-20">
+            <span class="text-[9px] text-cyan-400 uppercase font-bold mb-2 tracking-widest">Patrocínio Lateral</span>
+            <div class="w-full flex flex-col items-center justify-center space-y-4">
+                <script src="https://pl30778021.profitableratecpmnetwork.com/78/fa/00/78fa00cf4dcda3dedf40132f76226af6.js"></script>
+            </div>
+        </aside>
+
+        <!-- Main Invoice A4 Document Container -->
+        <main id="printArea" class="print-page bg-white w-full max-w-[8.27in] min-h-[11.69in] max-h-[11.69in] p-4 sm:p-5 shadow-2xl text-[9.5pt] leading-snug text-black flex flex-col justify-between mb-4 relative rounded-lg sm:rounded-none z-10">
+            
+            <div class="space-y-1">
+                <!-- LOGO & BRANDING HEADER BLOCK -->
+                <div class="flex justify-between items-start mb-2">
+                    <div id="logoContainer" class="logo-box-container group shrink-0 relative overflow-hidden shadow-sm flex items-center justify-center border border-slate-300">
+                        <input type="file" id="logoFileInput" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="handleLogoUpload(event)">
+                        
+                        <div id="logoDisplay" class="logo-container w-full h-full p-1 bg-white">
+                            <!-- SVG Original será carregado por JavaScript como Padrão -->
+                        </div>
+
+                        <div id="logoOverlayBadge" class="no-print absolute inset-0 bg-slate-900/70 text-white text-[9px] font-bold opacity-0 hidden group-hover:opacity-100 flex flex-col items-center justify-center transition p-1 text-center cursor-pointer" onclick="triggerLogoUpload()">
+                            <i class="fa-solid fa-camera text-sm mb-0.5 text-amber-300"></i>
+                            <span>Alterar Logo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full h-[1.5px] bg-[#007b85] mb-1"></div>
+
+                <!-- COMPANY & CUSTOMER INFO -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-1 text-[10pt]">
+                    <div class="sm:col-span-6 space-y-0.5 leading-snug">
+                        <h1 class="font-bold uppercase text-[10.5pt] outline-none rounded px-1 -mx-1 editable-field" contenteditable="false" id="companyName">BELLA MAPIKWA SBRAY, EI</h1>
+                        <p contenteditable="false" id="companyAddress" class="outline-none rounded px-1 -mx-1 editable-field">PRAIA DO BILENE</p>
+                        <p contenteditable="false" id="companyProvince" class="outline-none rounded px-1 -mx-1 editable-field">DISTRITO DE BILENE-GAZA</p>
+                        <div class="flex items-center gap-x-1">
+                            <span class="shrink-0">Cell:</span>
+                            <span contenteditable="false" id="companyPhone" class="outline-none rounded px-0.5 editable-field">+258 862134963 / 846418000</span>
+                        </div>
+                        <div class="flex items-center gap-x-1">
+                            <span class="shrink-0">Contribuinte Nº:</span>
+                            <span contenteditable="false" id="companyNuit" class="outline-none font-medium rounded px-0.5 editable-field">111391165</span>
+                        </div>
+                        <div class="flex items-center gap-x-1">
+                            <span class="shrink-0">Email:</span>
+                            <span contenteditable="false" id="companyEmail" class="outline-none rounded px-0.5 editable-field">tropicalparaiso85@gmail.com</span>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-6 space-y-0.5 sm:pl-10 pt-1 border-t sm:border-t-0 border-slate-200">
+                        <p class="font-normal">Exmo.(s) Sr.(s)</p>
+                        <p class="font-bold outline-none rounded px-1 -mx-1 text-[11pt] editable-field" contenteditable="false" id="customerName">PROCAVA</p>
+                        <p class="font-normal outline-none rounded px-1 -mx-1 editable-field" contenteditable="false" id="customerAddress">Praia do Bilene - Gaza</p>
+                    </div>
+                </div>
+
+                <!-- DOCUMENT TYPE & NUMBER SELECTION -->
+                <div class="flex justify-end mb-1 overflow-x-auto">
+                    <div class="text-right w-full sm:w-auto">
+                        <div class="flex items-center justify-end gap-1.5 font-bold text-[13pt] sm:text-[15pt] text-[#007b85] mb-0.5 tracking-tight uppercase flex-wrap">
+                            <span class="no-print relative inline-block">
+                                <select id="docTypeSelect" disabled onchange="updateDocType(this.value)" class="bg-sky-50/80 text-[#007b85] font-bold outline-none rounded px-2 py-0.5 text-right border border-[#007b85]/40 transition shadow-sm disabled:bg-slate-100 disabled:text-slate-700 disabled:border-slate-300 disabled:cursor-not-allowed">
+                                    <option value="Cotação">Cotação</option>
+                                    <option value="Factura">Factura</option>
+                                    <option value="Recibo">Recibo</option>
+                                    <option value="Factura-Recibo">Factura-Recibo</option>
+                                    <option value="Factura Pró-Forma" selected>Factura Pró-Forma</option>
+                                </select>
+                            </span>
+                            <span id="docTypePrintDisplay" class="hidden print:inline uppercase">Factura Pró-Forma</span>
+                            <span>Nº</span>
+                            <span contenteditable="false" id="docNumber" class="outline-none rounded px-1 editable-field">112/2026</span>
+                        </div>
+
+                        <table class="erp-table min-w-[300px] sm:w-[340px] text-center text-[8.5pt]">
+                            <thead>
+                                <tr class="font-normal">
+                                    <th class="py-0.5 px-1 font-normal w-22">Requisição</th>
+                                    <th class="py-0.5 px-1 font-normal w-14">Moeda</th>
+                                    <th class="py-0.5 px-1 font-normal w-14">Câmbio</th>
+                                    <th class="py-0.5 px-1 font-normal w-18">Data</th>
+                                    <th class="py-0.5 px-1 font-normal w-18">Vencimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="py-0.5 px-1 editable-field" contenteditable="false" id="docRequisicao">PROCAVA</td>
+                                    <td class="py-0.5 px-1 uppercase editable-field" contenteditable="false" id="docCurrency" onblur="syncCurrency(this.innerText)">MT</td>
+                                    <td class="py-0.5 px-1 editable-field" contenteditable="false" id="docExchangeRate">1,00</td>
+                                    <td class="py-0.5 px-1 font-medium select-none cursor-pointer text-blue-700 hover:bg-blue-50 transition print:text-black print:hover:bg-transparent" id="docDate" onclick="handleDateClick('docDate', event)" title="Clique para alterar a data">01/09/2026</td>
+                                    <td class="py-0.5 px-1 font-medium select-none cursor-pointer text-blue-700 hover:bg-blue-50 transition print:text-black print:hover:bg-transparent" id="docDueDate" onclick="handleDateClick('docDueDate', event)" title="Clique para alterar a data">10/09/2026</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-right text-[8.5pt] font-normal mb-0.5 pr-0.5">Original</div>
+
+                <!-- SECONDARY ERP TABLE -->
+                <div class="mb-1 overflow-x-auto">
+                    <table class="erp-table w-full text-center text-[8.5pt] min-w-[480px]">
+                        <thead>
+                            <tr class="font-normal">
+                                <th class="py-0.5 px-1 w-26 font-normal">V/ Nº Contrib.</th>
+                                <th class="py-0.5 px-1 w-18 font-normal" id="th-desc-cli">Desc. Cli.</th>
+                                <th class="py-0.5 px-1 font-normal">Condição Pagamento</th>
+                                <th class="py-0.5 px-1 w-18 font-normal" id="th-desc-fin">Desc. Fin.</th>
+                                <th class="py-0.5 px-1 w-14 font-normal">Zona</th>
+                                <th class="py-0.5 px-1 w-14 font-normal text-[#007b85] font-semibold">Operador</th>
+                                <th class="py-0.5 px-1 w-10 font-normal">Pag.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-0.5 px-1 editable-field" contenteditable="false" id="customerTaxId">-</td>
+                                <td class="py-0.5 px-1 editable-field" contenteditable="false" id="customerDisc">0,00</td>
+                                <td class="py-0.5 px-1 editable-field" contenteditable="false" id="paymentTerms">100% no acto da confirmação</td>
+                                <td class="py-0.5 px-1 editable-field" contenteditable="false" id="financialDisc">0,00</td>
+                                <td class="py-0.5 px-1 editable-field" contenteditable="false" id="salesZone">BILENE</td>
+                                <td class="py-0.5 px-1 font-semibold" contenteditable="false" id="salesPerson">EMIDIO CHILENGUE</td>
+                                <td class="py-0.5 px-1">1/1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ITEMS TABLE GRID -->
+                <div class="items-grid-container mb-0.5">
+                    <div class="items-grid-header">
+                        <div class="items-col justify-start pl-1">Artigo</div>
+                        <div class="items-col justify-start pl-1">Descrição</div>
+                        <div class="items-col justify-end pr-1">Quant.</div>
+                        <div class="items-col justify-center">Un</div>
+                        <div class="items-col justify-end pr-1">Pr. Unitário</div>
+                        <div class="items-col justify-end pr-1">Desc.</div>
+                        <div class="items-col justify-end pr-1">IVA</div>
+                        <div class="items-col justify-end pr-1">Total Líquido</div>
+                    </div>
+
+                    <div class="grid-lines-overlay">
+                        <div class="grid-line-col"></div><div class="grid-line-col"></div>
+                        <div class="grid-line-col"></div><div class="grid-line-col"></div>
+                        <div class="grid-line-col"></div><div class="grid-line-col"></div>
+                        <div class="grid-line-col"></div><div class="grid-line-col"></div>
+                    </div>
+
+                    <div class="items-grid-body z-10" id="itemsGridBody">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- FOOTER METRICS -->
+                <div class="flex items-center text-[7.5pt] mb-1 px-0.5 space-x-4 flex-wrap text-black">
+                    <div>Documento Processado por Computador • Supabase Database Connected</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                    <div class="md:col-span-7 flex flex-col justify-between h-full">
+                        <div class="mb-1.5 overflow-x-auto">
+                            <table class="erp-table text-center text-[8.5pt] w-full">
+                                <thead>
+                                    <tr class="font-normal">
+                                        <th colspan="4" class="py-0.5 px-1 font-normal text-center border-b border-black">IVA | <span id="vatInclusiveLabel">Incluído</span> à Taxa</th>
+                                    </tr>
+                                    <tr class="font-normal">
+                                        <th class="py-0.5 px-1 w-14 font-normal">Taxa</th>
+                                        <th class="py-0.5 px-1 w-24 font-normal">Incidência</th>
+                                        <th class="py-0.5 px-1 w-24 font-normal">Valor IVA</th>
+                                        <th class="py-0.5 px-1 font-normal">Motivo Isenção</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="py-0.5 px-1" id="vatRateDisplay">16,00</td>
+                                        <td class="py-0.5 px-1" id="vatIncidenceDisplay">253.965,52</td>
+                                        <td class="py-0.5 px-1" id="vatAmountDisplay">40.634,48</td>
+                                        <td class="py-0.5 px-1 editable-field" contenteditable="false" id="vatExemptionReason"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-0.5">
+                            <div class="flex items-center justify-between mb-1">
+                                <p class="font-bold underline text-[10pt] text-black">Dados Bancários:</p>
+                                <button id="addBankBtn" onclick="addBankRow()" class="no-print hidden bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2 py-0.5 rounded font-semibold transition items-center gap-1">
+                                    <i class="fa-solid fa-plus text-emerald-400"></i> + Conta (Admin)
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[9pt]" id="banksContainer"></div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-5 flex flex-col justify-between h-full">
+                        <table class="w-full text-[9pt] border-collapse">
+                            <tbody>
+                                <tr>
+                                    <td class="py-0.5 px-1 text-left font-normal align-middle">Mercadoria/Serviços</td>
+                                    <td class="py-0.5 px-2 text-right w-28 font-normal border border-black bg-white" id="totalGross">253.965,52</td>
+                                </tr>
+                                <tr id="row-desc-com">
+                                    <td class="py-0.5 px-1 text-left font-normal align-middle" title="Desconto total (Itens + Global)">Descontos Comerciais</td>
+                                    <td class="py-0.5 px-2 text-right w-28 border border-black bg-white">
+                                        <input type="text" id="totalDiscounts" disabled value="0,00" onblur="updateTotals('discount', this.value)" class="input-cell text-right font-normal" />
+                                    </td>
+                                </tr>
+                                <tr id="row-adiantamento">
+                                    <td class="py-0.5 px-1 text-left font-normal align-middle">Adiantamentos</td>
+                                    <td class="py-0.5 px-2 text-right w-28 border border-black bg-white">
+                                        <input type="text" id="totalAdvance" disabled value="0,00" onblur="updateTotals('advance', this.value)" class="input-cell text-right font-normal" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-0.5 px-1 text-left font-normal align-middle">IVA</td>
+                                    <td class="py-0.5 px-2 text-right w-28 font-normal border border-black bg-white" id="totalVat">40.634,48</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-0.5 px-1 text-left align-middle font-bold text-[10.5pt]" id="totalLabel">Total ( <span id="summaryCurrency">MT</span> )</td>
+                                    <td class="py-0.5 px-2 text-right w-28 font-bold text-[10.5pt] border border-black bg-white" id="totalInvoice">294.600,00</td>
+                                </tr>
+                                <tr id="balanceRow">
+                                    <td class="py-0.5 px-1 text-left align-middle font-bold text-[11pt] text-[#007b85] border-t border-black bg-slate-50/50 print:bg-transparent" id="balanceLabel">Saldo a Pagar</td>
+                                    <td class="py-0.5 px-2 text-right w-28 font-bold text-[11pt] text-[#007b85] border-t border border-black bg-slate-50/50 print:bg-transparent" id="balanceAmount">294.600,00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-8 sm:mt-10 pt-4">
+                            <div class="w-full border-b border-black mb-1"></div>
+                            <p class="font-normal text-center text-[8.5pt] outline-none rounded px-1 editable-field" contenteditable="false" id="signatureLabel">Assinatura GERÊNCIA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="no-print hidden lg:flex flex-col items-center justify-start w-48 min-h-[600px] bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-2 shadow-xl sticky top-20">
+            <span class="text-[9px] text-cyan-400 uppercase font-bold mb-2 tracking-widest">Patrocínio Lateral</span>
+            <div class="w-full flex flex-col items-center justify-center space-y-4">
+                <script src="https://pl30778021.profitableratecpmnetwork.com/78/fa/00/78fa00cf4dcda3dedf40132f76226af6.js"></script>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="no-print w-full flex flex-col items-center justify-center bg-slate-950 border-t border-cyan-500/30 py-4 px-2 mt-auto relative z-10">
+        <span class="text-[10px] text-cyan-400 font-semibold mb-2 uppercase tracking-wider">Patrocínio & Anúncios Oficiais</span>
+        <div id="container-edbac03e0788a019f72e8767b9dc91d4" class="w-full max-w-4xl flex justify-center items-center my-1"></div>
+        <script async="async" data-cfasync="false" src="https://pl30778022.profitableratecpmnetwork.com/edbac03e0788a019f72e8767b9dc91d4/invoke.js"></script>
+    </footer>
+
+    <!-- CALENDAR MODAL -->
+    <div id="calendarModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeCalendarModal()">
+        <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[340px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
+            <div class="bg-slate-900/90 border-b border-cyan-500/30 p-3.5 flex justify-between items-center">
+                <button onclick="changeCalendarMonth(-1)" class="p-1.5 hover:bg-cyan-950 rounded-lg text-cyan-300 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                <div class="font-bold text-xs tracking-wide text-cyan-200 neon-glow-cyan" id="calendarMonthYear">Setembro 2026</div>
+                <button onclick="changeCalendarMonth(1)" class="p-1.5 hover:bg-cyan-950 rounded-lg text-cyan-300 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
+            <div class="p-4">
+                <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-cyan-400 mb-2">
+                    <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs" id="calendarDaysGrid">
+                    <!-- Gerado via JS -->
+                </div>
+            </div>
+            <div class="bg-slate-900/90 p-3 border-t border-cyan-500/30 flex justify-end">
+                <button onclick="closeCalendarModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg font-semibold transition border border-slate-700">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="no-print fixed bottom-5 right-5 z-[999] bg-slate-900/95 text-white px-4 py-3 rounded-xl shadow-2xl border border-cyan-500/50 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-md">
+        <i class="fa-solid fa-circle-check text-cyan-400 text-sm neon-glow-cyan" id="toastIcon"></i>
+        <span id="toastMessage" class="text-cyan-100 font-medium">Operação realizada com sucesso!</span>
+    </div>
+
+    <!-- HISTORY MODAL -->
+    <div id="historyModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeHistoryModal()">
+        <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[560px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
+            <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 p-2 rounded-lg"><i class="fa-solid fa-database text-sm"></i></div>
+                    <div>
+                        <h3 class="font-bold text-sm leading-tight text-cyan-200 neon-glow-cyan">Histórico de Facturas no Supabase</h3>
+                        <p class="text-[11px] text-slate-400">Tabela: <code class="text-cyan-300">facturas</code></p>
+                    </div>
+                </div>
+                <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="p-4 max-h-[380px] overflow-y-auto space-y-2.5" id="historyListContainer">
+                <div class="text-center py-8 text-cyan-400/70 text-xs">A carregar dados do Supabase...</div>
+            </div>
+            <div class="bg-slate-900/90 px-4 py-3 border-t border-cyan-500/30 flex justify-between items-center text-xs">
+                <button onclick="saveInvoiceToSupabase()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow border border-emerald-400/50">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar Documento Atual
+                </button>
+                <button onclick="closeHistoryModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold transition border border-slate-700">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN & REGISTER MODAL -->
+    <div id="loginModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div id="loginModalCard" class="neon-card-bg neon-border-cyan rounded-3xl shadow-[0_0_40px_rgba(0,243,255,0.25)] w-[440px] max-w-full overflow-hidden text-white relative" onclick="event.stopPropagation()">
+            <div class="p-6 text-center relative z-10 border-b border-cyan-500/20">
+                <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-cyan-300 transition p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <div class="w-14 h-14 bg-cyan-950/80 border border-cyan-500/60 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-[0_0_20px_rgba(0,243,255,0.4)]">
+                    <i class="fa-solid fa-user-astronaut text-2xl text-cyan-300 neon-glow-cyan"></i>
+                </div>
+                <h3 class="font-bold text-lg leading-tight text-cyan-200 neon-glow-cyan" id="authModalTitle">Painel de Acesso Espacial</h3>
+                <p class="text-xs text-slate-300 mt-1" id="authModalSubtitle">Identifique-se para gerenciar o sistema</p>
+                <div class="flex bg-slate-900/90 border border-cyan-500/30 p-1 rounded-xl mt-4 text-xs font-semibold">
+                    <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow">Login</button>
+                    <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition">Cadastrar Novo</button>
+                </div>
+            </div>
+
+            <form id="loginFormContainer" onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Nome de Utilizador</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400"><i class="fa-solid fa-user text-xs"></i></span>
+                        <input type="text" id="loginUsername" required placeholder="Ex: admin ou cassimo" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Palavra-passe (Min. 6 caracteres)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                        <input type="password" id="loginPassword" required minlength="6" placeholder="••••••••" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                    </div>
+                </div>
+                <div id="loginErrorMsg" class="hidden text-pink-400 text-xs text-center font-medium bg-pink-950/60 p-2.5 rounded-xl border border-pink-500/50">Utilizador ou palavra-passe incorretos ou licença expirada.</div>
+                <div class="pt-2 flex justify-end gap-2.5">
+                    <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-slate-900/90 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl border border-cyan-400">Entrar no Sistema</button>
+                </div>
+            </form>
+
+            <form id="registerFormContainer" onsubmit="handleRegisterSubmit(event)" class="p-6 space-y-3.5 relative z-10 hidden">
+                <div class="bg-amber-950/40 border border-amber-500/40 text-amber-200 p-2.5 rounded-xl text-[11px] flex items-center gap-2.5">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm"></i>
+                    <span>Limite máximo de <strong>5 utilizadores</strong> com data de validade configurada.</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Nome do Utilizador</label>
+                    <input type="text" id="regUsername" required placeholder="Ex: maria.silva" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Email</label>
+                    <input type="email" id="regEmail" required placeholder="exemplo@dominio.com" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Palavra-passe (Mínimo 6 caracteres)</label>
+                    <input type="password" id="regPassword" required minlength="6" placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-cyan-200 mb-1">Data de Expiração da Licença</label>
+                    <input type="date" id="regExpiryDate" required class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+                </div>
+                <div id="registerErrorMsg" class="hidden text-pink-400 text-xs text-center font-medium bg-pink-950/60 p-2.5 rounded-xl border border-pink-500/50">Erro ao cadastrar novo utilizador.</div>
+                <div class="pt-2 flex justify-end gap-2.5">
+                    <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-slate-900/90 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl border border-emerald-400">Cadastrar Conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- USER & LICENSE MANAGEMENT MODAL -->
+    <div id="userMgmtModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="neon-card-bg neon-border-cyan rounded-3xl shadow-2xl w-[780px] max-w-full overflow-hidden text-white relative">
+            <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 p-2.5 rounded-xl"><i class="fa-solid fa-users-gear text-lg"></i></div>
+                    <div>
+                        <h3 class="font-bold text-base leading-tight text-cyan-200 neon-glow-cyan">Administração do Sistema</h3>
+                        <p class="text-xs text-slate-400">Gerir Utilizadores, Fundo e Logotipo</p>
+                    </div>
+                </div>
+                <button onclick="closeUserMgmtModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-5 max-h-[600px] overflow-y-auto space-y-6">
+                <!-- User Management Section -->
+                <div>
+                    <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-list text-cyan-400"></i> Utilizadores Cadastrados (<span id="userCountText">0</span> / 5 limite)</span>
+                    </h4>
+                    <div class="border border-cyan-500/30 rounded-2xl overflow-hidden shadow-lg bg-slate-900/60">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="bg-slate-950 text-cyan-200 border-b border-cyan-500/30 font-semibold">
+                                <tr>
+                                    <th class="p-3">Utilizador</th>
+                                    <th class="p-3">Email</th>
+                                    <th class="p-3">Perfil</th>
+                                    <th class="p-3">Data Expiração</th>
+                                    <th class="p-3 text-center">Estado</th>
+                                    <th class="p-3 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userMgmtTableBody" class="divide-y divide-cyan-500/20 bg-slate-900/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Background Management Section -->
+                <div class="border-t border-cyan-500/30 pt-5">
+                    <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-image text-cyan-400"></i> Background da Aplicação (Área Externa)</span>
+                    </h4>
+                    <div class="bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div id="bgPreviewContainer" class="w-32 h-20 bg-slate-800 rounded-lg border border-slate-600 overflow-hidden relative shadow-inner">
+                                <div id="bgPreviewImage" class="w-full h-full bg-cover bg-center" style="background-image: radial-gradient(circle at 50% 30%, #101c38 0%, #05070c 70%, #020305 100%);"></div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-cyan-200">Personalizar Ambiente Visual</p>
+                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue uma imagem (PNG, JPG, WEBP). O background altera apenas a área envolvente da factura.</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 min-w-[140px]">
+                            <input type="file" id="bgFileInput" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="handleBgUpload(event)">
+                            <button onclick="document.getElementById('bgFileInput').click()" class="w-full px-3 py-2 bg-cyan-700/80 hover:bg-cyan-600 text-white rounded-lg text-xs font-semibold transition border border-cyan-500/50 flex items-center justify-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-upload"></i> Carregar Novo
+                            </button>
+                            <button onclick="removeActiveBackground()" class="w-full px-3 py-2 bg-pink-900/60 hover:bg-pink-800 text-pink-200 rounded-lg text-xs font-semibold transition border border-pink-500/50 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-trash-can"></i> Remover Fundo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Logo Management Section -->
+                <div class="border-t border-cyan-500/30 pt-5">
+                    <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-camera text-cyan-400"></i> Logotipo da Empresa</span>
+                    </h4>
+                    <div class="bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div id="adminLogoPreview" class="w-24 h-24 bg-white rounded-lg border border-slate-600 overflow-hidden relative shadow-inner flex items-center justify-center p-1">
+                                <i class="fa-solid fa-image text-slate-400 text-3xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-cyan-200">Substituir Logotipo</p>
+                                <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue o logotipo oficial da empresa. O logotipo antigo é automaticamente descartado para poupar espaço na BD.</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 min-w-[140px]">
+                            <button onclick="triggerLogoUpload()" class="w-full px-3 py-2 bg-amber-700/80 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold transition border border-amber-500/50 flex items-center justify-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-upload"></i> Carregar Novo
+                            </button>
+                            <button onclick="removeActiveLogo()" class="w-full px-3 py-2 bg-pink-900/60 hover:bg-pink-800 text-pink-200 rounded-lg text-xs font-semibold transition border border-pink-500/50 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-trash-can"></i> Remover Logo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="bg-slate-900/90 px-5 py-3 border-t border-cyan-500/30 flex justify-between items-center text-xs">
+                <span class="text-slate-400 text-[11px]"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Acesso Restrito ADMIN</span>
+                <button onclick="closeUserMgmtModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-semibold transition border border-slate-700">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÕES SUPABASE
+        const SUPABASE_URL = 'https://snfeihixucjfsadojhgb.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_pgqobHO8523w7jFz348dYg_0chnyljO';
+        let supabaseClient = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+            }
+        } catch (e) {
+            console.error("Supabase error:", e);
+        }
+
+        const defaultData = {
+            docType: "Factura Pró-Forma",
+            docNumber: "112/2026",
+            docDate: "01/09/2026",
+            docDueDate: "10/09/2026",
+            docCurrency: "MT",
+            docExchangeRate: "1,00",
+            company: {
+                name: "BELLA MAPIKWA SBRAY, EI",
+                address: "PRAIA DO BILENE",
+                province: "DISTRITO DE BILENE-GAZA",
+                phone: "+258 862134963 / 846418000",
+                nuit: "111391165",
+                email: "tropicalparaiso85@gmail.com"
+            },
+            customerName: "PROCAVA",
+            customerAddress: "Praia do Bilene - Gaza",
+            customerTaxId: "-",
+            customerDisc: "0,00",
+            paymentTerms: "100% no acto da confirmação",
+            financialDisc: "0,00",
+            salesZone: "BILENE",
+            vatExemptionReason: "",
+            totalDiscounts: 0, 
+            totalAdvance: 0,
+            note: "",
+            items: [
+                { code: "001", description: "LANCHE DE MANHA (3 dias x 40 pess.)", qty: 120, unit: "UN", price: 450, discount: 0, vatRate: 16 },
+                { code: "002", description: "ALMOÇO (3 dias x 40 pess.)", qty: 120, unit: "UN", price: 1100, discount: 0, vatRate: 16 },
+                { code: "003", description: "JANTAR (4 dias x 12 pess.)", qty: 48, unit: "UN", price: 700, discount: 0, vatRate: 16 },
+                { code: "004", description: "SALA DE CONFERENCIAS (3 dias)", qty: 3, unit: "UN", price: 25000, discount: 0, vatRate: 16 }
+            ],
+            banks: [
+                { bankName: "Millennium BIM", account: "158305068", nib: "0001.0000.015830506857", holder: "BELLA MAPIKWA SBRAY, EI" },
+                { bankName: "BCI", account: "-", nib: "-", holder: "BELLA MAPIKWA SBRAY, EI" }
+            ]
+        };
+
+        let currentData = JSON.parse(JSON.stringify(defaultData));
+        let isVatIncluded = true;
+        let currentUser = { username: "Visitante", role: "guest", loggedIn: false };
+        let previousUserNote = "";
+
+        let systemUsers = [
+            { id: 1, username: "admin", email: "admin@bellamapikwa.co.mz", role: "admin", expiryDate: "2027-12-31", status: "Ativo" },
+            { id: 2, username: "cassimo", email: "cassimo@bellamapikwa.co.mz", role: "editor", expiryDate: "2026-12-31", status: "Ativo" },
+            { id: 3, username: "emidio", email: "emidio@bellamapikwa.co.mz", role: "editor", expiryDate: "2026-10-15", status: "Ativo" }
+        ];
+
+        let targetDateField = '';
+        let currentCalendarDate = new Date();
+
+        // ---------------- GESTÃO DE BACKGROUND ---------------- //
+        async function loadAppBackground() {
+            if (!supabaseClient) return;
+            try {
+                const { data } = await supabaseClient.from('app_settings').select('background_url').eq('id', 1).single();
+                if (data && data.background_url) applyBackground(data.background_url);
+            } catch (e) {
+                console.log("Sistema usa o background padrão.", e.message);
+            }
+        }
+
+        function applyBackground(url) {
+            const body = document.body;
+            const preview = document.getElementById('bgPreviewImage');
+            
+            if (url) {
+                const finalUrl = url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
+                body.style.backgroundImage = `url('${finalUrl}')`;
+                body.style.backgroundSize = 'cover';
+                body.style.backgroundPosition = 'center';
+                body.style.backgroundRepeat = 'no-repeat';
+                body.style.backgroundAttachment = 'fixed';
+                if (preview) preview.style.backgroundImage = `url('${finalUrl}')`;
+            } else {
+                body.style.backgroundImage = 'radial-gradient(circle at 50% 30%, #101c38 0%, #05070c 70%, #020305 100%)';
+                body.style.backgroundSize = '';
+                body.style.backgroundPosition = '';
+                body.style.backgroundRepeat = '';
+                if (preview) preview.style.backgroundImage = 'radial-gradient(circle at 50% 30%, #101c38 0%, #05070c 70%, #020305 100%)';
+            }
+        }
+
+        async function handleBgUpload(event) {
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showToast("Formato inválido. Por favor, use JPG, PNG ou WEBP.");
+                return;
+            }
+            showToast("A carregar novo background. Aguarde...");
+            if (!supabaseClient) { showToast("Erro: Supabase não está conectado."); return; }
+
+            try {
+                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                if (existing && existing.background_path) {
+                    await supabaseClient.storage.from('app_assets').remove([existing.background_path]);
+                }
+
+                const fileExt = file.name.split('.').pop();
+                const filePath = `backgrounds/bg_${Date.now()}.${fileExt}`;
+                const { error: uploadError } = await supabaseClient.storage.from('app_assets').upload(filePath, file, { cacheControl: '3600', upsert: false });
+                if (uploadError) throw uploadError;
+
+                const { data: publicUrlData } = supabaseClient.storage.from('app_assets').getPublicUrl(filePath);
+                const publicUrl = publicUrlData.publicUrl;
+
+                const payload = existing ? { ...existing, background_url: publicUrl, background_path: filePath } : { id: 1, background_url: publicUrl, background_path: filePath };
+                const { error: dbError } = await supabaseClient.from('app_settings').upsert(payload);
+                if (dbError) throw dbError;
+
+                applyBackground(publicUrl);
+                showToast("Background atualizado com sucesso!");
+            } catch (err) {
+                console.error("Erro no processo de background:", err);
+                showToast("Erro ao carregar o background.");
+            }
+            event.target.value = '';
+        }
+
+        async function removeActiveBackground() {
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
+            if (!supabaseClient) return;
+            if (!confirm("Tem a certeza que deseja remover o background personalizado?")) return;
+            showToast("A remover background...");
+
+            try {
+                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                if (existing && existing.background_path) {
+                    await supabaseClient.storage.from('app_assets').remove([existing.background_path]);
+                }
+                const payload = existing ? { ...existing, background_url: null, background_path: null } : { id: 1, background_url: null, background_path: null };
+                await supabaseClient.from('app_settings').upsert(payload);
+
+                applyBackground(null);
+                showToast("Background removido. Tema padrão restaurado.");
+            } catch (err) {
+                console.error("Erro ao remover:", err);
+                showToast("Erro ao remover background.");
+            }
+        }
+
+        // ---------------- GESTÃO DO LOGOTIPO (NOVO) ---------------- //
+        const defaultLogoSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" class="w-full h-full max-h-full">
+                <g fill="#0b5563">
+                    <rect x="156" y="55" width="22" height="52" />
+                    <path d="M 66 182 L 168 85 L 265 178 Z" />
+                    <path d="M 172 178 L 292 65 L 424 178 Z" />
+                    <path d="M 312 178 L 380 115 L 448 178 Z" />
+                    <g fill="#ffffff">
+                        <rect x="247" y="132" width="16" height="15" />
+                        <rect x="267" y="132" width="16" height="15" />
+                        <rect x="247" y="151" width="16" height="15" />
+                        <rect x="267" y="151" width="16" height="15" />
+                        <rect x="323" y="127" width="15" height="14" />
+                        <rect x="342" y="127" width="15" height="14" />
+                        <rect x="323" y="145" width="15" height="14" />
+                        <rect x="342" y="145" width="15" height="14" />
+                    </g>
+                    <path d="M 40 148 C 45 220, 115 235, 230 200 C 350 162, 440 205, 470 216 C 445 180, 370 145, 225 186 C 120 216, 62 175, 40 148 Z" />
+                    <path d="M 175 232 C 260 212, 360 212, 462 238 C 420 216, 320 204, 175 232 Z" opacity="0.95" />
+                </g>
+                <text x="250" y="258" text-anchor="middle" fill="#0b5563" font-family="'Liberation Sans', sans-serif" font-size="20" font-weight="800">BELLA MAPIKWA SBRAY, EI</text>
+                <text x="250" y="280" text-anchor="middle" fill="#0b5563" font-family="'Liberation Sans', sans-serif" font-size="21" font-weight="900" letter-spacing="3">BMB</text>
+                <text x="250" y="308" text-anchor="middle" fill="#0b5563" font-family="'Playfair Display', serif" font-size="18" font-weight="700">Acomodação, Restauração e Bar</text>
+            </svg>
+        `;
+
+        async function loadAppLogo() {
+            if (!supabaseClient) {
+                applyLogo(null);
+                return;
+            }
+            try {
+                const { data } = await supabaseClient.from('app_settings').select('logo_url').eq('id', 1).single();
+                if (data && data.logo_url) {
+                    applyLogo(data.logo_url);
+                } else {
+                    applyLogo(null);
+                }
+            } catch (e) {
+                console.log("Sistema usa o logo padrão.", e.message);
+                applyLogo(null);
+            }
+        }
+
+        function applyLogo(url) {
+            const display = document.getElementById('logoDisplay');
+            const adminPreview = document.getElementById('adminLogoPreview');
+            
+            if (url) {
+                const finalUrl = url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
+                const imgHTML = `<img src="${finalUrl}" class="w-full h-full object-contain" alt="Logotipo da Empresa">`;
+                if (display) display.innerHTML = imgHTML;
+                if (adminPreview) adminPreview.innerHTML = imgHTML;
+            } else {
+                if (display) display.innerHTML = defaultLogoSVG;
+                if (adminPreview) adminPreview.innerHTML = `<i class="fa-solid fa-image text-slate-400 text-3xl"></i>`;
+            }
+        }
+
+        function triggerLogoUpload() {
+            if (currentUser.role === 'admin') {
+                document.getElementById('logoFileInput').click();
+            } else if (currentUser.loggedIn) {
+                showToast("Apenas o ADMIN pode alterar o logotipo da empresa.");
+            }
+        }
+
+        async function handleLogoUpload(event) {
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showToast("Formato inválido. Por favor, use PNG, JPG ou WEBP.");
+                return;
+            }
+
+            showToast("A carregar novo logotipo. Aguarde...");
+            if (!supabaseClient) { showToast("Erro: Supabase não está conectado."); return; }
+
+            try {
+                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                
+                // Remover logotipo anterior do storage para não acumular
+                if (existing && existing.logo_path) {
+                    await supabaseClient.storage.from('app_assets').remove([existing.logo_path]);
+                }
+
+                // Gerar caminho novo e previsível, timestamp resolve problema de cache e histórico sujo
+                const fileExt = file.name.split('.').pop();
+                const filePath = `logos/logo_${Date.now()}.${fileExt}`;
+                
+                const { error: uploadError } = await supabaseClient.storage.from('app_assets').upload(filePath, file, { cacheControl: '3600', upsert: false });
+                if (uploadError) throw uploadError;
+
+                const { data: publicUrlData } = supabaseClient.storage.from('app_assets').getPublicUrl(filePath);
+                const publicUrl = publicUrlData.publicUrl;
+
+                const payload = existing ? { ...existing, logo_url: publicUrl, logo_path: filePath } : { id: 1, logo_url: publicUrl, logo_path: filePath };
+                const { error: dbError } = await supabaseClient.from('app_settings').upsert(payload);
+                if (dbError) throw dbError;
+
+                applyLogo(publicUrl);
+                showToast("Logotipo atualizado com sucesso!");
+            } catch (err) {
+                console.error("Erro no processo de logotipo:", err);
+                showToast("Erro ao carregar o logotipo.");
+            }
+            
+            event.target.value = '';
+        }
+
+        async function removeActiveLogo() {
+            if (!currentUser.loggedIn || currentUser.role !== 'admin') return;
+            if (!supabaseClient) return;
+            if (!confirm("Tem a certeza que deseja remover o logotipo atual?")) return;
+
+            showToast("A remover logotipo...");
+
+            try {
+                const { data: existing } = await supabaseClient.from('app_settings').select('*').eq('id', 1).single();
+                
+                if (existing && existing.logo_path) {
+                    await supabaseClient.storage.from('app_assets').remove([existing.logo_path]);
+                }
+
+                const payload = existing ? { ...existing, logo_url: null, logo_path: null } : { id: 1, logo_url: null, logo_path: null };
+                await supabaseClient.from('app_settings').upsert(payload);
+
+                applyLogo(null);
+                showToast("Logotipo removido. Padrão restaurado.");
+            } catch (err) {
+                console.error("Erro ao remover:", err);
+                showToast("Erro ao remover logotipo.");
+            }
+        }
+
+
+        // FUNÇÕES GLOBAIS DE FORMATAÇÃO E CÁLCULO
+        function formatNumber(num, decimals = 2) {
+            if (isNaN(num)) return "0,00";
+            const parts = num.toFixed(decimals).split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return parts.join(',');
+        }
+
+        function parseNumber(str) {
+            if (typeof str !== 'string') return Number(str) || 0;
+            const clean = str.replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+            return parseFloat(clean) || 0;
+        }
+
+        function valorPorExtenso(numero) {
+            const unidades = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
+            const dezenas = ["", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
+            const centenas = ["", "cento", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"];
+
+            function converterGrupo(n) {
+                if (n === 0) return "";
+                if (n === 100) return "cem";
+                let c = Math.floor(n / 100);
+                let d = Math.floor((n % 100) / 10);
+                let u = n % 10;
+                let res = [];
+
+                if (c > 0) res.push(centenas[c]);
+                if (d === 1) {
+                    res.push(["dez", "onze", "doze", "treze", "catorze", "quinze", "dezasseis", "dezassete", "dezoito", "dezanove"][u]);
+                } else {
+                    if (d > 1) res.push(dezenas[d]);
+                    if (u > 0) res.push(unidades[u]);
+                }
+                return res.join(" e ");
+            }
+
+            if (numero === 0) return "zero meticais";
+
+            let meticais = Math.floor(numero);
+            let centavos = Math.round((numero - meticais) * 100);
+
+            let txtMeticais = "";
+            if (meticais > 0) {
+                let milhoes = Math.floor(meticais / 1000000);
+                let m = meticais % 1000000;
+                let milhares = Math.floor(m / 1000);
+                let resto = m % 1000;
+
+                let partes = [];
+                if (milhoes > 0) {
+                    partes.push(converterGrupo(milhoes) + (milhoes === 1 ? " milhão" : " milhões"));
+                }
+                if (milhares > 0) {
+                    partes.push((milhares === 1 ? "" : converterGrupo(milhares) + " ") + "mil");
+                }
+                if (resto > 0) {
+                    let prefixo = "";
+                    if (partes.length > 0) {
+                        if (resto <= 100 || resto % 100 === 0) prefixo = " e ";
+                        else prefixo = " ";
+                    }
+                    partes.push(prefixo + converterGrupo(resto));
+                }
+
+                txtMeticais = partes.join("").trim().replace(/\s+/g, ' ');
+                if (milhoes > 0 && milhares === 0 && resto === 0) txtMeticais += " de";
+                txtMeticais += (meticais === 1 ? " metical" : " meticais");
+            }
+
+            let txtCentavos = "";
+            if (centavos > 0) {
+                txtCentavos = converterGrupo(centavos) + (centavos === 1 ? " centavo" : " centavos");
+            }
+
+            if (txtMeticais && txtCentavos) return txtMeticais + " e " + txtCentavos;
+            if (txtMeticais) return txtMeticais;
+            return txtCentavos;
+        }
+
+        // CARREGAMENTO INICIAL
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                loadAppBackground(); 
+                loadAppLogo(); // Verifica se há logotipo no Supabase no arranque da app
+                renderInvoice();
+                setupEditableFields();
+                updateUIPermissions();
+                const tomorrow = new Date();
+                tomorrow.setMonth(tomorrow.getMonth() + 3);
+                const dateStr = tomorrow.toISOString().split('T')[0];
+                const expiryInput = document.getElementById('regExpiryDate');
+                if (expiryInput) expiryInput.value = dateStr;
+                
+                if(typeof loadSupabaseHistoryCount === 'function') {
+                    loadSupabaseHistoryCount();
+                }
+            } catch (err) {
+                console.error("Initialization error:", err);
+            }
+        });
+
+        function renderInvoice() {
+            try {
+                const setElText = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+                
+                if (currentUser.loggedIn) {
+                    currentData.salesPerson = currentUser.username.toUpperCase();
+                }
+
+                const isReceipt = currentData.docType === 'Recibo';
+                const isInvoiceReceipt = currentData.docType === 'Factura-Recibo';
+                const isCreationOrProforma = currentData.docType === 'Factura' || currentData.docType === 'Factura Pró-Forma' || currentData.docType === 'Cotação';
+
+                const showDiscounts = isCreationOrProforma;
+                const showAdvance = isCreationOrProforma;
+
+                setElText('companyName', currentData.company.name);
+                setElText('companyAddress', currentData.company.address);
+                setElText('companyProvince', currentData.company.province);
+                setElText('companyPhone', currentData.company.phone);
+                setElText('companyNuit', currentData.company.nuit);
+                setElText('companyEmail', currentData.company.email);
+
+                setElText('customerName', currentData.customerName);
+                setElText('customerAddress', currentData.customerAddress);
+                setElText('customerTaxId', currentData.customerTaxId);
+                setElText('customerDisc', currentData.customerDisc);
+                setElText('paymentTerms', currentData.paymentTerms);
+                setElText('financialDisc', currentData.financialDisc);
+                setElText('salesZone', currentData.salesZone || 'BILENE');
+                setElText('salesPerson', currentData.salesPerson || 'VISITANTE');
+                setElText('vatExemptionReason', currentData.vatExemptionReason || '');
+
+                const docTypeSel = document.getElementById('docTypeSelect');
+                if (docTypeSel) docTypeSel.value = currentData.docType;
+                setElText('docTypePrintDisplay', currentData.docType);
+                setElText('docNumber', currentData.docNumber);
+                setElText('docRequisicao', currentData.docRequisicao || currentData.customerName);
+                setElText('docCurrency', currentData.docCurrency);
+                setElText('summaryCurrency', currentData.docCurrency);
+                setElText('docExchangeRate', currentData.docExchangeRate);
+                setElText('docDate', currentData.docDate);
+                setElText('docDueDate', currentData.docDueDate);
+
+                const secHeadersAndCells = ['th-desc-cli', 'customerDisc', 'th-desc-fin', 'financialDisc'];
+                secHeadersAndCells.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = showDiscounts ? '' : 'none';
+                });
+
+                const gridCols = showDiscounts ? '60px 1fr 50px 32px 85px 42px 42px 95px' : '60px 1fr 50px 32px 85px 42px 95px';
+                const headerEl = document.querySelector('.items-grid-header');
+                if (headerEl) {
+                    headerEl.style.gridTemplateColumns = gridCols;
+                    headerEl.innerHTML = `
+                        <div class="items-col justify-start pl-1">Artigo</div>
+                        <div class="items-col justify-start pl-1">Descrição</div>
+                        <div class="items-col justify-end pr-1">Quant.</div>
+                        <div class="items-col justify-center">Un</div>
+                        <div class="items-col justify-end pr-1">Pr. Unitário</div>
+                        ${showDiscounts ? '<div class="items-col justify-end pr-1">Desc.</div>' : ''}
+                        <div class="items-col justify-end pr-1">IVA</div>
+                        <div class="items-col justify-end pr-1">Total Líquido</div>
+                    `;
+                }
+                const overlayEl = document.querySelector('.grid-lines-overlay');
+                if (overlayEl) {
+                    overlayEl.style.gridTemplateColumns = gridCols;
+                    overlayEl.innerHTML = showDiscounts 
+                        ? '<div class="grid-line-col"></div>'.repeat(8) 
+                        : '<div class="grid-line-col"></div>'.repeat(7);
+                }
+
+                const itemsContainer = document.getElementById('itemsGridBody');
+                if (!itemsContainer) return;
+                itemsContainer.innerHTML = '';
+
+                let sumGross = 0;
+                let sumItemDisc = 0;
+                let rawVatVal = 0;
+                let rawNet = 0;
+
+                currentData.items.forEach((item, index) => {
+                    const qty = Number(item.qty) || 0;
+                    const price = Number(item.price) || 0;
+                    const disc = showDiscounts ? (Number(item.discount) || 0) : 0; 
+                    
+                    const itemGross = qty * price;
+                    const itemNet = itemGross - disc;
+                    
+                    sumGross += itemGross;
+                    sumItemDisc += disc;
+                    rawNet += itemNet;
+
+                    const vatRate = Number(item.vatRate) || 16;
+                    const lineVat = isVatIncluded ? (itemNet * vatRate) / (100 + vatRate) : (itemNet * vatRate) / 100;
+                    rawVatVal += lineVat;
+
+                    const row = document.createElement('div');
+                    row.className = 'items-grid-row group';
+                    row.style.gridTemplateColumns = gridCols;
+                    row.innerHTML = `
+                        <div class="items-col justify-start pl-1 relative"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.code || ''}" onblur="updateItemField(${index}, 'code', this.value)"></div>
+                        <div class="items-col justify-start pl-1"><input type="text" class="input-cell" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.description || ''}" onblur="updateItemField(${index}, 'description', this.value)"></div>
+                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${qty}" onblur="updateItemField(${index}, 'qty', this.value)"></div>
+                        <div class="items-col justify-center"><input type="text" class="input-cell text-center" ${!currentUser.loggedIn ? 'disabled' : ''} value="${item.unit || ''}" onblur="updateItemField(${index}, 'unit', this.value)"></div>
+                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(price, 2)}" onblur="updateItemField(${index}, 'price', this.value)"></div>
+                        ${showDiscounts ? `<div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${formatNumber(disc, 2)}" onblur="updateItemField(${index}, 'discount', this.value)"></div>` : ''}
+                        <div class="items-col justify-end pr-1"><input type="text" class="input-cell text-right" ${!currentUser.loggedIn ? 'disabled' : ''} value="${vatRate}" onblur="updateItemField(${index}, 'vatRate', this.value)"></div>
+                        <div class="items-col justify-end pr-1 font-medium relative">
+                            ${formatNumber(itemNet, 2)}
+                            ${currentUser.loggedIn ? `
+                            <button onclick="removeInvoiceItem(${index})" class="no-print absolute -right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-600 hover:bg-red-50 transition p-0.5 rounded shadow-sm z-10" title="Remover item">
+                                <i class="fa-solid fa-times text-xs"></i>
+                            </button>` : ''}
+                        </div>
+                    `;
+                    itemsContainer.appendChild(row);
+                });
+
+                if (currentUser.loggedIn) {
+                    const addRow = document.createElement('div');
+                    addRow.className = 'no-print z-20 relative bg-white border-b border-slate-100 flex items-center p-1';
+                    addRow.innerHTML = `
+                        <button onclick="addInvoiceRow()" class="text-[10px] bg-slate-800 text-white px-2.5 py-1 rounded font-medium hover:bg-slate-700 transition flex items-center gap-1.5 shadow-sm border border-slate-700">
+                            <i class="fa-solid fa-plus text-emerald-400"></i> Adicionar Item
+                        </button>
+                        <button onclick="toggleNoteField()" class="ml-2 text-[10px] bg-slate-50 text-[#007b85] px-2.5 py-1 rounded font-medium hover:bg-slate-200 transition flex items-center gap-1.5 border border-slate-300">
+                            <i class="fa-solid ${currentData.note ? 'fa-times' : 'fa-note-sticky'}"></i> ${currentData.note && (!isReceipt && !isInvoiceReceipt) ? 'Remover Nota' : 'Adicionar Nota'}
+                        </button>
+                    `;
+                    itemsContainer.appendChild(addRow);
+                }
+
+                const globalDisc = showDiscounts ? (Number(currentData.totalDiscounts) || 0) : 0;
+                const totalDiscountsToDisplay = sumItemDisc + globalDisc;
+                
+                let discountMultiplier = 1;
+                if (rawNet > 0 && globalDisc > 0) {
+                    discountMultiplier = Math.max(0, (rawNet - globalDisc) / rawNet);
+                }
+                
+                const finalVatVal = rawVatVal * discountMultiplier;
+                const finalNetAfterAllDiscounts = rawNet - globalDisc;
+                const advanceInput = showAdvance ? (Number(currentData.totalAdvance) || 0) : 0;
+                
+                const finalInvoiceTotal = isVatIncluded ? finalNetAfterAllDiscounts : finalNetAfterAllDiscounts + finalVatVal;
+                let balance = finalInvoiceTotal - advanceInput;
+
+                if (isReceipt || isInvoiceReceipt) {
+                    const extenso = valorPorExtenso(finalInvoiceTotal);
+                    currentData.note = extenso.charAt(0).toUpperCase() + extenso.slice(1) + ".";
+                }
+
+                if (currentData.note !== null && currentData.note !== undefined && currentData.note !== "") {
+                    const noteRow = document.createElement('div');
+                    noteRow.className = 'z-20 relative bg-white flex flex-col p-1 border-b border-[#333333] group print:border-none print:border-t print:border-slate-300';
+                    noteRow.innerHTML = `
+                        <span class="font-bold text-slate-800 mb-0.5 text-[8.5pt]">Observações:</span>
+                        <textarea id="invoiceNote" class="w-full bg-transparent p-0 outline-none resize-none ${(isReceipt || isInvoiceReceipt) ? 'text-[#007b85] font-semibold' : 'text-slate-800'} text-[8.5pt] flex-1" onblur="updateNoteField(this.value)" placeholder="Insira as notas ou observações aqui..." ${!currentUser.loggedIn || isReceipt || isInvoiceReceipt ? 'disabled' : ''} style="min-height: 24px; overflow: hidden;" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">${currentData.note}</textarea>
+                    `;
+                    itemsContainer.appendChild(noteRow);
+                }
+
+                const rowDescCom = document.getElementById('row-desc-com');
+                const rowAdiantamento = document.getElementById('row-adiantamento');
+                const balanceRow = document.getElementById('balanceRow');
+                
+                if (rowDescCom) rowDescCom.style.display = showDiscounts ? '' : 'none';
+                if (rowAdiantamento) rowAdiantamento.style.display = showAdvance ? '' : 'none';
+                
+                // Hide balance row for Receipt and Invoice-Receipt
+                if (balanceRow) balanceRow.style.display = (isReceipt || isInvoiceReceipt) ? 'none' : '';
+
+                setElText('totalGross', formatNumber(sumGross, 2));
+                const totDiscEl = document.getElementById('totalDiscounts');
+                if (totDiscEl) totDiscEl.value = formatNumber(totalDiscountsToDisplay, 2);
+                
+                const totAdvEl = document.getElementById('totalAdvance');
+                if (totAdvEl) totAdvEl.value = formatNumber(advanceInput, 2);
+                
+                setElText('totalVat', formatNumber(finalVatVal, 2));
+                setElText('totalInvoice', formatNumber(finalInvoiceTotal, 2));
+                
+                const incidence = isVatIncluded ? (finalNetAfterAllDiscounts - finalVatVal) : finalNetAfterAllDiscounts;
+                setElText('vatIncidenceDisplay', formatNumber(Math.max(0, incidence), 2));
+                setElText('vatAmountDisplay', formatNumber(finalVatVal, 2));
+                setElText('vatInclusiveLabel', isVatIncluded ? "Incluído" : "Adicionado");
+
+                const balanceEl = document.getElementById('balanceAmount');
+                if (balanceEl) {
+                     // For receipt or invoice-receipt, balance is not applicable, but we ensure it's not showing anyway
+                    balanceEl.innerText = formatNumber(Math.max(0, balance), 2);
+                }
+
+                renderBanks();
+
+            } catch (e) {
+                console.error("Error in renderInvoice:", e);
+            }
+        }
+
+        function renderBanks() {
+            const container = document.getElementById('banksContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            currentData.banks.forEach((bank, index) => {
+                const card = document.createElement('div');
+                card.className = 'p-1.5 border border-slate-300 rounded bg-slate-50 text-[8.5pt] space-y-0.5 relative print:bg-transparent';
+                card.innerHTML = `
+                    <p class="font-bold text-slate-800">${bank.bankName || ''}</p>
+                    <p>Conta: <span class="font-medium">${bank.account || ''}</span></p>
+                    <p>NIB: <span class="font-medium">${bank.nib || ''}</span></p>
+                    <p>Titular: <span class="font-medium">${bank.holder || currentData.company.name}</span></p>
+                    ${currentUser.loggedIn && currentUser.role === 'admin' ? `
+                        <button onclick="removeBankRow(${index})" class="no-print absolute top-1 right-1 text-red-600 hover:text-red-800 text-[10px] p-0.5"><i class="fa-solid fa-trash"></i></button>
+                    ` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function setupEditableFields() {
+            const fieldsMap = [
+                { id: 'companyName', key: ['company', 'name'] },
+                { id: 'companyAddress', key: ['company', 'address'] },
+                { id: 'companyProvince', key: ['company', 'province'] },
+                { id: 'companyPhone', key: ['company', 'phone'] },
+                { id: 'companyNuit', key: ['company', 'nuit'] },
+                { id: 'companyEmail', key: ['company', 'email'] },
+                { id: 'customerName', key: ['customerName'] },
+                { id: 'customerAddress', key: ['customerAddress'] },
+                { id: 'customerTaxId', key: ['customerTaxId'] },
+                { id: 'customerDisc', key: ['customerDisc'] },
+                { id: 'paymentTerms', key: ['paymentTerms'] },
+                { id: 'financialDisc', key: ['financialDisc'] },
+                { id: 'salesZone', key: ['salesZone'] },
+                { id: 'docNumber', key: ['docNumber'] },
+                { id: 'docRequisicao', key: ['docRequisicao'] },
+                { id: 'docCurrency', key: ['docCurrency'] },
+                { id: 'docExchangeRate', key: ['docExchangeRate'] },
+                { id: 'vatExemptionReason', key: ['vatExemptionReason'] },
+                { id: 'signatureLabel', key: ['signatureLabel'] }
+            ];
+
+            fieldsMap.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (el) {
+                    el.addEventListener('blur', () => {
+                        const val = el.innerText.trim();
+                        if (f.key.length === 1) currentData[f.key[0]] = val;
+                        else if (f.key.length === 2) currentData[f.key[0]][f.key[1]] = val;
+                    });
+                }
+            });
+        }
+
+        function updateItemField(index, field, value) {
+            if (['qty', 'price', 'discount', 'vatRate'].includes(field)) {
+                currentData.items[index][field] = parseNumber(value);
+            } else {
+                currentData.items[index][field] = value;
+            }
+            renderInvoice();
+        }
+
+        function updateTotals(type, value) {
+            if (!currentUser.loggedIn) return;
+            const num = parseNumber(value);
+            if (type === 'discount') {
+                let sumItemDisc = 0;
+                currentData.items.forEach(i => sumItemDisc += Number(i.discount) || 0);
+                currentData.totalDiscounts = Math.max(0, num - sumItemDisc);
+            }
+            if (type === 'advance') currentData.totalAdvance = num;
+            renderInvoice();
+        }
+        
+        function toggleNoteField() {
+            if (!currentUser.loggedIn) return;
+            if (currentData.docType === 'Recibo' || currentData.docType === 'Factura-Recibo') {
+                showToast("A nota é gerada automaticamente para este tipo de documento.");
+                return;
+            }
+
+            if (currentData.note === null || currentData.note === undefined || currentData.note === "") {
+                currentData.note = " ";
+            } else {
+                currentData.note = "";
+            }
+            renderInvoice();
+            const noteEl = document.getElementById('invoiceNote');
+            if (currentData.note && noteEl) noteEl.focus();
+        }
+
+        function updateNoteField(val) {
+            currentData.note = val;
+        }
+
+        function addInvoiceRow() {
+            if (!currentUser.loggedIn) return;
+            currentData.items.push({ code: "00" + (currentData.items.length + 1), description: "Novo Artigo ou Serviço", qty: 1, unit: "UN", price: 1000, discount: 0, vatRate: 16 });
+            renderInvoice();
+            showToast("Item adicionado com sucesso.");
+        }
+
+        function removeInvoiceItem(index) {
+            if (!currentUser.loggedIn) return;
+            currentData.items.splice(index, 1);
+            renderInvoice();
+            showToast("Item removido com sucesso.");
+        }
+
+        function toggleVatMode() {
+            isVatIncluded = !isVatIncluded;
+            const btn = document.getElementById('vatModeBtn');
+            if (btn) btn.innerHTML = isVatIncluded ? '<i class="fa-solid fa-calculator"></i> Total c/ IVA' : '<i class="fa-solid fa-calculator"></i> Total s/ IVA';
+            renderInvoice();
+            showToast(isVatIncluded ? "Modo: IVA incluído no valor." : "Modo: IVA adicionado ao total.");
+        }
+
+        function syncCurrency(val) {
+            currentData.docCurrency = val.toUpperCase();
+            renderInvoice();
+        }
+
+        function updateDocType(type) {
+            const wasReceiptOrInvoiceReceipt = currentData.docType === 'Recibo' || currentData.docType === 'Factura-Recibo';
+            const isReceiptOrInvoiceReceipt = type === 'Recibo' || type === 'Factura-Recibo';
+
+            if (!wasReceiptOrInvoiceReceipt && isReceiptOrInvoiceReceipt) {
+                previousUserNote = currentData.note || "";
+                // Clear discounts and advances when switching to receipt/invoice-receipt
+                currentData.totalDiscounts = 0;
+                currentData.totalAdvance = 0;
+                currentData.items.forEach(item => item.discount = 0);
+            } else if (wasReceiptOrInvoiceReceipt && !isReceiptOrInvoiceReceipt) {
+                currentData.note = previousUserNote;
+            }
+
+            currentData.docType = type;
+            const displayEl = document.getElementById('docTypePrintDisplay');
+            if (displayEl) displayEl.innerText = type;
+
+            renderInvoice();
+        }
+
+        function handleDateClick(fieldId, event) {
+            if (!currentUser.loggedIn) return;
+            targetDateField = fieldId;
+            
+            const dateStr = document.getElementById(fieldId).innerText;
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                currentCalendarDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T12:00:00`);
+            } else {
+                currentCalendarDate = new Date();
+            }
+            
+            renderCalendarDays();
+            document.getElementById('calendarModal').classList.remove('hidden');
+        }
+
+        function renderCalendarDays() {
+            const monthYearEl = document.getElementById('calendarMonthYear');
+            const daysGrid = document.getElementById('calendarDaysGrid');
+            
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            monthYearEl.innerText = `${monthNames[month]} ${year}`;
+            
+            daysGrid.innerHTML = '';
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDay; i++) {
+                daysGrid.innerHTML += `<div></div>`;
+            }
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                const isToday = new Date().toDateString() === new Date(year, month, i).toDateString();
+                const btnClass = isToday 
+                    ? "bg-cyan-600 text-white font-bold rounded hover:bg-cyan-500 py-1 cursor-pointer transition shadow" 
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white rounded py-1 cursor-pointer transition";
+                    
+                daysGrid.innerHTML += `<div class="${btnClass}" onclick="selectCalendarDate(${i})">${i}</div>`;
+            }
+        }
+
+        function changeCalendarMonth(offset) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+            renderCalendarDays();
+        }
+
+        function selectCalendarDate(day) {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const dateObj = new Date(year, month, day);
+            
+            const formatted = String(dateObj.getDate()).padStart(2, '0') + '/' + String(dateObj.getMonth() + 1).padStart(2, '0') + '/' + dateObj.getFullYear();
+            
+            currentData[targetDateField] = formatted;
+            renderInvoice();
+            closeCalendarModal();
+            showToast("Data alterada com sucesso.");
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.add('hidden');
+        }
+
+        function openUserMgmtModal() {
+            const modal = document.getElementById('userMgmtModal');
+            if (modal) modal.classList.remove('hidden');
+            renderUserMgmtTable();
+        }
+        function closeUserMgmtModal() {
+            const modal = document.getElementById('userMgmtModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function renderUserMgmtTable() {
+            const tbody = document.getElementById('userMgmtTableBody');
+            const countText = document.getElementById('userCountText');
+            if(!tbody) return;
+            
+            tbody.innerHTML = '';
+            if(countText) countText.innerText = systemUsers.length;
+
+            systemUsers.forEach(u => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3 font-semibold text-cyan-100">${u.username}</td>
+                        <td class="p-3 text-slate-400">${u.email}</td>
+                        <td class="p-3 uppercase text-[10px]"><span class="${u.role === 'admin' ? 'bg-amber-900/50 text-amber-300' : 'bg-cyan-900/50 text-cyan-300'} px-2 py-1 rounded font-bold">${u.role}</span></td>
+                        <td class="p-3 font-mono text-cyan-200">${u.expiryDate}</td>
+                        <td class="p-3 text-center"><span class="bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded font-bold text-[10px] uppercase">${u.status}</span></td>
+                        <td class="p-3 text-center">
+                            <button disabled class="text-slate-500 cursor-not-allowed hover:text-white transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.classList.remove('hidden');
+            const err1 = document.getElementById('loginErrorMsg');
+            if (err1) err1.classList.add('hidden');
+            const err2 = document.getElementById('registerErrorMsg');
+            if (err2) err2.classList.add('hidden');
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.classList.add('hidden');
+        }
+        
+        function logoutUser() {
+            currentUser = { username: "Visitante", role: "guest", loggedIn: false };
+            updateUIPermissions();
+            renderInvoice();
+            showToast("Sessão terminada com sucesso.");
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginFormContainer');
+            const regForm = document.getElementById('registerFormContainer');
+            const tabLogin = document.getElementById('tabLoginBtn');
+            const tabReg = document.getElementById('tabRegisterBtn');
+            const title = document.getElementById('authModalTitle');
+            const subtitle = document.getElementById('authModalSubtitle');
+
+            if (tab === 'login') {
+                if (loginForm) loginForm.classList.remove('hidden');
+                if (regForm) regForm.classList.add('hidden');
+                if (tabLogin) tabLogin.className = "flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow";
+                if (tabReg) tabReg.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
+                if (title) title.innerText = "Painel de Acesso Espacial";
+                if (subtitle) subtitle.innerText = "Identifique-se para gerenciar o sistema";
+            } else {
+                if (loginForm) loginForm.classList.add('hidden');
+                if (regForm) regForm.classList.remove('hidden');
+                if (tabReg) tabReg.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition shadow";
+                if (tabLogin) tabLogin.className = "flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition";
+                if (title) title.innerText = "Registo de Nova Conta";
+                if (subtitle) subtitle.innerText = "Cadastre um novo operador";
+            }
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const usernameEl = document.getElementById('loginUsername');
+            const passwordEl = document.getElementById('loginPassword');
+            if (!usernameEl || !passwordEl) return;
+
+            const usernameInput = usernameEl.value.trim().toLowerCase();
+            const modalBox = document.getElementById('loginModalCard');
+            const errorBox = document.getElementById('loginErrorMsg');
+
+            const foundUser = systemUsers.find(u => u.username.toLowerCase() === usernameInput);
+
+            if (foundUser) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                if (foundUser.expiryDate && foundUser.expiryDate < todayStr) {
+                    if (modalBox) modalBox.classList.add('animate-neon-error');
+                    if (errorBox) {
+                        errorBox.classList.remove('hidden');
+                        errorBox.innerText = `A licença deste utilizador expirou em ${foundUser.expiryDate}!`;
+                    }
+                    setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+                    return;
+                }
+
+                if (modalBox) modalBox.classList.add('animate-neon-success');
+                if (errorBox) errorBox.classList.add('hidden');
+
+                currentUser = { username: foundUser.username, role: foundUser.role, loggedIn: true };
+
+                setTimeout(() => {
+                    if (modalBox) modalBox.classList.remove('animate-neon-success');
+                    closeLoginModal();
+                    updateUIPermissions();
+                    renderInvoice();
+                    showToast(`Bem-vindo, ${currentUser.username}!`);
+                }, 1000);
+            } else {
+                if (modalBox) modalBox.classList.add('animate-neon-error');
+                if (errorBox) {
+                    errorBox.classList.remove('hidden');
+                    errorBox.innerText = "Utilizador ou palavra-passe incorretos.";
+                }
+                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+            }
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const modalBox = document.getElementById('loginModalCard');
+            const errorBox = document.getElementById('registerErrorMsg');
+
+            if (systemUsers.length >= 5) {
+                if (modalBox) modalBox.classList.add('animate-neon-error');
+                if (errorBox) {
+                    errorBox.classList.remove('hidden');
+                    errorBox.innerText = "Limite de utilizadores atingido (Máx 5).";
+                }
+                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+                return;
+            }
+
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const expiryDate = document.getElementById('regExpiryDate').value;
+            
+            if(systemUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                if (modalBox) modalBox.classList.add('animate-neon-error');
+                if (errorBox) {
+                    errorBox.classList.remove('hidden');
+                    errorBox.innerText = "Nome de utilizador já existe.";
+                }
+                setTimeout(() => { if (modalBox) modalBox.classList.remove('animate-neon-error'); }, 500);
+                return;
+            }
+
+            const newUser = {
+                id: systemUsers.length + 1,
+                username: username,
+                email: email,
+                role: "editor",
+                expiryDate: expiryDate,
+                status: "Ativo"
+            };
+
+            systemUsers.push(newUser);
+
+            if (modalBox) modalBox.classList.add('animate-neon-success');
+            if (errorBox) errorBox.classList.add('hidden');
+
+            setTimeout(() => {
+                if (modalBox) modalBox.classList.remove('animate-neon-success');
+                switchAuthTab('login');
+                showToast("Conta criada com sucesso! Faça login.");
+            }, 1000);
+        }
+
+        function updateUIPermissions() {
+            const roleBadge = document.getElementById('currentUserRoleBadge');
+            const usernameDisp = document.getElementById('currentUserName');
+            const roleIcon = document.getElementById('userRoleIcon');
+            const pill = document.getElementById('currentUserPill');
+            const authBtn = document.getElementById('authBtn');
+            const adminBtn = document.getElementById('adminMgmtBtn');
+            const logoBtn = document.getElementById('logoUploadBtn');
+            
+            const vatModeBtn = document.getElementById('vatModeBtn');
+            const importBtn = document.getElementById('importJsonBtn');
+            const saveBtn = document.getElementById('saveDocBtn');
+            const printBtn = document.getElementById('printDocBtn');
+            const docTypeSelect = document.getElementById('docTypeSelect');
+
+            const editables = document.querySelectorAll('.editable-field');
+            
+            if (currentUser.loggedIn) {
+                if (usernameDisp) usernameDisp.innerText = currentUser.username;
+                if (authBtn) authBtn.innerHTML = '<i class="fa-solid fa-right-from-bracket text-pink-200"></i> Sair';
+                if (authBtn) authBtn.onclick = logoutUser;
+                if (authBtn) authBtn.className = "bg-pink-900/60 hover:bg-pink-800 text-pink-100 px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition border border-pink-500/50 shadow-[0_0_10px_rgba(236,72,153,0.3)] whitespace-nowrap";
+                
+                if (pill) pill.className = "flex items-center gap-1.5 bg-slate-900/90 border border-emerald-500/40 px-3 py-1.5 rounded-full text-[11px] shadow-[0_0_10px_rgba(16,185,129,0.2)]";
+                if (roleIcon) roleIcon.className = "fa-solid fa-user-check text-emerald-400";
+                if (usernameDisp) usernameDisp.className = "font-bold text-emerald-300";
+
+                if (vatModeBtn) vatModeBtn.disabled = false;
+                if (importBtn) importBtn.disabled = false;
+                if (saveBtn) saveBtn.disabled = false;
+                if (printBtn) printBtn.disabled = false;
+                if (docTypeSelect) docTypeSelect.disabled = false;
+
+                editables.forEach(el => {
+                    if(el.id !== 'signatureLabel' || currentUser.role === 'admin') {
+                        el.setAttribute('contenteditable', 'true');
+                    }
+                });
+
+                if (currentUser.role === 'admin') {
+                    if (roleBadge) { roleBadge.innerText = "ADMIN"; roleBadge.className = "bg-amber-900 text-amber-300 border border-amber-500/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
+                    if (adminBtn) adminBtn.classList.remove('hidden');
+                    if (logoBtn) logoBtn.classList.remove('hidden');
+                    const addBankBtn = document.getElementById('addBankBtn');
+                    if (addBankBtn) addBankBtn.classList.remove('hidden');
+                } else {
+                    if (roleBadge) { roleBadge.innerText = "EDITOR"; roleBadge.className = "bg-emerald-900 text-emerald-300 border border-emerald-500/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
+                    if (adminBtn) adminBtn.classList.add('hidden');
+                    if (logoBtn) logoBtn.classList.add('hidden');
+                    const addBankBtn = document.getElementById('addBankBtn');
+                    if (addBankBtn) addBankBtn.classList.add('hidden');
+                }
+            } else {
+                if (usernameDisp) usernameDisp.innerText = "Visitante";
+                if (roleBadge) { roleBadge.innerText = "Sem Acesso"; roleBadge.className = "bg-cyan-950 text-cyan-300 border border-cyan-700/50 text-[9px] px-2 py-0.5 rounded font-bold uppercase"; }
+                
+                if (authBtn) authBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket text-cyan-200"></i> Login / Cadastro';
+                if (authBtn) authBtn.onclick = openLoginModal;
+                if (authBtn) authBtn.className = "bg-cyan-600/80 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(0,243,255,0.4)] border border-cyan-400/60 whitespace-nowrap";
+                
+                if (pill) pill.className = "flex items-center gap-1.5 bg-slate-900/90 border border-cyan-500/40 px-3 py-1.5 rounded-full text-[11px] shadow-[0_0_10px_rgba(0,243,255,0.2)]";
+                if (roleIcon) roleIcon.className = "fa-solid fa-circle-user text-cyan-400";
+                if (usernameDisp) usernameDisp.className = "font-semibold text-cyan-200";
+
+                if (adminBtn) adminBtn.classList.add('hidden');
+                if (logoBtn) logoBtn.classList.add('hidden');
+
+                if (vatModeBtn) vatModeBtn.disabled = true;
+                if (importBtn) importBtn.disabled = true;
+                if (saveBtn) saveBtn.disabled = true;
+                if (printBtn) printBtn.disabled = true;
+                if (docTypeSelect) docTypeSelect.disabled = true;
+
+                editables.forEach(el => el.setAttribute('contenteditable', 'false'));
+                const addBankBtn = document.getElementById('addBankBtn');
+                if (addBankBtn) addBankBtn.classList.add('hidden');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            if (!toast || !msgEl) return;
+            msgEl.innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function triggerPrintAndSave() {
+            if (!currentUser.loggedIn) return;
+            window.print();
+        }
+
+        function exportInvoiceToJSON() {
+            const dataStr = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Factura_${currentData.docNumber.replace(/\//g, '-')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Backup descarregado com sucesso.");
+        }
+
+        function triggerImportJSON() {
+            if (!currentUser.loggedIn) return;
+            document.getElementById('importJsonFileInput').click();
+        }
+
+        function handleImportJSON(event) {
+            if (!currentUser.loggedIn) return;
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData && importedData.docNumber) {
+                        currentData = importedData;
+                        renderInvoice();
+                        showToast("Dados importados com sucesso!");
+                    } else {
+                        showToast("Ficheiro inválido.");
+                    }
+                } catch (err) {
+                    showToast("Erro ao ler ficheiro.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; 
+        }
+
+        async function saveInvoiceToSupabase() {
+            if (!currentUser.loggedIn) {
+                showToast("Erro: Inicie sessão para guardar na base de dados.");
+                return;
+            }
+            if (!supabaseClient) {
+                showToast("Erro: Cliente Supabase não inicializado.");
+                return;
+            }
+
+            showToast("A guardar documento no Supabase...");
+            const btn = document.getElementById('saveDocBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A guardar...';
+            btn.disabled = true;
+
+            try {
+                const invoicePayload = {
+                    doc_number: currentData.docNumber,
+                    doc_type: currentData.docType,
+                    doc_date: currentData.docDate,
+                    customer_name: currentData.customerName,
+                    total_amount: parseFloat(document.getElementById('totalInvoice').innerText.replace(/\./g, '').replace(',', '.')),
+                    invoice_data: currentData,
+                    created_by: currentUser.username
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('facturas')
+                    .upsert(invoicePayload, { onConflict: 'doc_number' });
+
+                if (error) throw error;
+                
+                showToast("Documento guardado com sucesso na Base de Dados!");
+                loadSupabaseHistoryCount();
+            } catch (err) {
+                console.error("Erro Supabase:", err);
+                showToast("Erro ao guardar: " + err.message);
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        async function loadSupabaseHistoryCount() {
+            if (!supabaseClient) return;
+            try {
+                const { count, error } = await supabaseClient
+                    .from('facturas')
+                    .select('*', { count: 'exact', head: true });
+                    
+                if (error) throw error;
+                const badge = document.getElementById('historyBadge');
+                if (badge) badge.innerText = count || 0;
+            } catch(e) {
+                console.log("Erro contagem: ", e.message);
+            }
+        }
+
+        function openHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            if (modal) modal.classList.remove('hidden');
+            loadHistoryList();
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function loadHistoryList() {
+            const container = document.getElementById('historyListContainer');
+            if (!container) return;
+
+            if (!supabaseClient) {
+                container.innerHTML = '<div class="text-center py-8 text-pink-400 text-xs">Erro: Supabase não conectado.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="text-center py-8 text-cyan-400/70 text-xs"><i class="fa-solid fa-satellite-dish animate-pulse mb-2 text-xl block"></i> A carregar transmissões...</div>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('facturas')
+                    .select('id, doc_number, doc_type, doc_date, customer_name, total_amount, created_at, created_by')
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs">Nenhum documento encontrado na base de dados.</div>';
+                    return;
+                }
+
+                let html = '';
+                data.forEach(inv => {
+                    const dateObj = new Date(inv.created_at);
+                    const dateStr = dateObj.toLocaleDateString('pt-PT') + ' ' + dateObj.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'});
+                    
+                    html += `
+                        <div class="bg-slate-900/60 border border-cyan-500/30 p-3 rounded-xl flex justify-between items-center hover:bg-slate-800/80 transition">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-cyan-900/50 text-cyan-300 px-2 py-0.5 rounded text-[10px] font-bold">${inv.doc_type}</span>
+                                    <span class="font-bold text-sm text-white">${inv.doc_number}</span>
+                                </div>
+                                <div class="text-xs text-slate-300 font-medium">${inv.customer_name}</div>
+                                <div class="text-[10px] text-slate-500 mt-1"><i class="fa-regular fa-clock"></i> ${dateStr} • Por: ${inv.created_by || 'Desconhecido'}</div>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <div class="font-bold text-emerald-400 text-sm">${formatNumber(inv.total_amount, 2)} MT</div>
+                                <button onclick="loadInvoiceFromSupabase('${inv.doc_number}')" class="bg-cyan-700 hover:bg-cyan-600 text-white text-[10px] px-3 py-1.5 rounded-lg transition border border-cyan-500 shadow" ${!currentUser.loggedIn ? 'disabled title="Faça login para carregar"' : ''}>
+                                    <i class="fa-solid fa-download"></i> Carregar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                container.innerHTML = `<div class="text-center py-8 text-pink-400 text-xs">Falha ao carregar dados: ${err.message}</div>`;
+            }
+        }
+
+        async function loadInvoiceFromSupabase(docNumber) {
+            if (!currentUser.loggedIn) {
+                showToast("Faça login para carregar documentos.");
+                return;
+            }
+
+            showToast("A transferir dados do Supabase...");
+            try {
+                const { data, error } = await supabaseClient
+                    .from('facturas')
+                    .select('invoice_data')
+                    .eq('doc_number', docNumber)
+                    .single();
+
+                if (error) throw error;
+                if (data && data.invoice_data) {
+                    currentData = data.invoice_data;
+                    renderInvoice();
+                    closeHistoryModal();
+                    showToast(`Documento ${docNumber} carregado com sucesso!`);
+                }
+            } catch (err) {
+                console.error("Erro ao carregar:", err);
+                showToast("Erro ao carregar documento.");
+            }
+        }
+
+        function addBankRow() {
+            if (currentUser.role !== 'admin') return;
+            currentData.banks.push({ bankName: "Novo Banco", account: "0000", nib: "0000", holder: currentData.company.name });
+            renderInvoice();
+            showToast("Nova conta bancária adicionada.");
+        }
+
+        function removeBankRow(index) {
+            if (currentUser.role !== 'admin') return;
+            currentData.banks.splice(index, 1);
+            renderInvoice();
+            showToast("Conta bancária removida.");
+        }
+
+    </script>
+</body>
+</html>
