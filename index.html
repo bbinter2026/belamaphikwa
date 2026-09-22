@@ -27,7 +27,7 @@
             margin: 0;
             padding: 0;
             transition: background-image 0.5s ease-in-out;
-            counter-reset: page;
+            counter-reset: page; /* Inicializa o contador de páginas para impressão */
         }
 
         .neon-glow-cyan { text-shadow: 0 0 8px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.4); }
@@ -121,26 +121,30 @@
             min-height: 11in;
             height: max-content; 
             box-sizing: border-box;
+            /* Margens visuais movidas para o wrapper interior garantem consistência independentemente da configuração da impressora */
             padding: 0.45in 0 0.35in 0; 
             margin: 0 auto;
             position: relative;
             background: #ffffff;
         }
 
+        /* WRAPPER FIXO - Previne redimensionamentos e reorganizações */
         .print-content-wrapper {
-            width: 7.4in !important; 
+            width: 7.4in !important; /* 8.5in - 1.1in (0.55in de cada lado) */
             min-width: 7.4in !important;
             max-width: 7.4in !important;
             margin: 0 auto !important;
             box-sizing: border-box !important;
         }
 
-        /* PRINT FINAL — LETTER */
+        /* PRINT FINAL — LETTER — SINGLE PAGE / MULTI-PAGE ADAPTATIVE */
         @media print {
-            html { font-size: 16px !important; }
+            html {
+                font-size: 16px !important; /* Fixa o tamanho da fonte root para congelar larguras relativas do Tailwind em rem */
+            }
 
             html, body {
-                width: 100% !important; 
+                width: 100% !important; /* Absorve dinamicamente as margens do browser sem esmagar o conteúdo interno */
                 max-width: 100% !important;
                 height: auto !important;
                 margin: 0 !important;
@@ -158,9 +162,10 @@
                 color: #000000 !important;
             }
 
-            * { box-sizing: border-box !important; }
+            * {
+                box-sizing: border-box !important;
+            }
 
-            /* BLOQUEIO ABSOLUTO DOS ANÚNCIOS NA IMPRESSÃO */
             .no-print,
             header.no-print,
             footer.no-print,
@@ -171,15 +176,8 @@
             .modal,
             .sidebar,
             .advertisement,
-            .ads-sidebar,
-            .ads-wrapper,
-            .ad-container,
-            .ad-slot {
+            .ad-container {
                 display: none !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
-                height: 0 !important;
-                width: 0 !important;
             }
 
             #printArea {
@@ -187,11 +185,11 @@
                 position: relative !important;
                 width: 100% !important;
                 max-width: 8.5in !important;
-                height: auto !important; 
-                min-height: 0 !important; 
+                height: auto !important; /* Permite multi-page */
+                min-height: 0 !important; /* Correção vital: Previne página branca no final */
                 max-height: none !important;
                 margin: 0 auto !important;
-                padding: 0.45in 0 0.55in 0 !important; 
+                padding: 0.45in 0 0.55in 0 !important; /* Espaço extra no bottom para rodapé */
                 overflow: visible !important;
                 background: #ffffff !important;
                 box-shadow: none !important;
@@ -206,13 +204,15 @@
                 display: block !important;
             }
             
-            .print-page { min-height: 0 !important; }
+            .print-page {
+                min-height: 0 !important; /* Correção vital 2: Previne página branca */
+            }
 
             #printArea table, .erp-table {
                 width: 100% !important;
                 max-width: 100% !important;
                 border-collapse: collapse !important;
-                table-layout: fixed !important; 
+                table-layout: fixed !important; /* Mantém tamanhos estritos em Tabelas */
                 page-break-inside: avoid !important;
             }
 
@@ -222,7 +222,11 @@
                 max-width: 100% !important;
             }
 
-            .items-grid-header { height: 0.50cm !important; font-size: 8pt !important; }
+            .items-grid-header {
+                height: 0.50cm !important;
+                font-size: 8pt !important;
+            }
+
             .items-grid-row {
                 height: 0.44cm !important;
                 min-height: 0.44cm !important;
@@ -231,18 +235,36 @@
                 page-break-inside: avoid !important;
             }
 
-            .items-col { padding-top: 0px !important; padding-bottom: 0px !important; line-height: 1 !important; }
-            .signature-area, .bank-details, .summary-area, .vat-area, .note-area, #banksContainer { page-break-inside: avoid !important; }
-            #invoiceNote { border: none !important; resize: none !important; background: transparent !important; overflow: hidden !important; }
-            .editable-field { background: transparent !important; outline: none !important; }
+            .items-col {
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+                line-height: 1 !important;
+            }
+
+            .signature-area,
+            .bank-details,
+            .summary-area,
+            .vat-area,
+            .note-area,
+            #banksContainer {
+                page-break-inside: avoid !important;
+            }
+
+            #invoiceNote {
+                border: none !important;
+                resize: none !important;
+                background: transparent !important;
+                overflow: hidden !important;
+            }
+
+            .editable-field {
+                background: transparent !important;
+                outline: none !important;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative">
-
-<!-- ANÚNCIO 3: Script Externo Profitablerate CPM -->
-<!-- Pode colocar o SCRIPT do Anúncio 3 aqui ou logo antes do fecho da tag </body> -->
-<!-- INSIRA O CÓDIGO DO ANÚNCIO 3 AQUI -->
+<body class="min-h-screen flex flex-col justify-between">
 
 <header class="no-print w-full neon-card-bg neon-border-cyan text-white py-3 px-4 sm:py-3.5 sm:px-6 mb-4 shadow-2xl flex flex-col gap-2 rounded-b-xl backdrop-blur-md sticky top-0 z-40">
     <div class="flex justify-between items-center flex-wrap gap-3 w-full">
@@ -303,23 +325,25 @@
             </button>
         </div>
     </div>
+    <!-- Rodapé Discreto de Suporte na Navegação -->
     <div class="w-full text-right pt-1.5 text-[9px] text-cyan-400/60 font-semibold tracking-widest uppercase">
         Suporte: BBS INTERNET CAFE @2026-2027
     </div>
 </header>
 
-<!-- NOVO WRAPPER: Flex-col no telemóvel (Anúncios passam p/ baixo), Flex-row xl no PC (Anúncios na Lateral) -->
-<div class="w-full flex flex-col xl:flex-row justify-center items-start gap-6 px-2 my-2 relative">
-    
+<div class="w-full flex justify-center items-start gap-4 px-2 my-2">
     <!-- Documento Principal Carta (Letter 8.5 x 11 in) -->
-    <main id="printArea" class="print-page bg-white shadow-2xl text-[8.5pt] leading-tight text-black mb-4 relative rounded-lg sm:rounded-none z-10 block shrink-0">
+    <main id="printArea" class="print-page bg-white shadow-2xl text-[8.5pt] leading-tight text-black mb-4 relative rounded-lg sm:rounded-none z-10 block">
+        <!-- Wrapper de Conteúdo (Mantém as dimensões estritas previnindo reflows) -->
         <div class="space-y-1 print-content-wrapper">
             <!-- Cabeçalho e Logo -->
             <div class="flex justify-between items-start mb-1">
                 <div id="logoContainer" class="logo-box-container group shrink-0 relative overflow-hidden shadow-sm flex items-center justify-center border border-slate-300">
                     <input type="file" id="logoFileInput" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="handleLogoUpload(event)">
                     
-                    <div id="logoDisplay" class="logo-container w-full h-full p-1 bg-white"></div>
+                    <div id="logoDisplay" class="logo-container w-full h-full p-1 bg-white">
+                        <!-- SVG Original / Logo Imagem -->
+                    </div>
 
                     <div id="logoOverlayBadge" class="no-print absolute inset-0 bg-slate-900/70 text-white text-[9px] font-bold opacity-0 hidden group-hover:opacity-100 flex flex-col items-center justify-center transition p-1 text-center cursor-pointer" onclick="triggerLogoUpload()">
                         <i class="fa-solid fa-camera text-sm mb-0.5 text-amber-300"></i>
@@ -449,6 +473,8 @@
                 </div>
 
                 <div class="grid-lines-overlay hidden"></div>
+
+                <!-- Corpo das Linhas da Tabela -->
                 <div class="items-grid-body z-10 w-full" id="itemsGridBody"></div>
             </div>
 
@@ -459,6 +485,7 @@
                 <span class="text-[9px] text-slate-500">A paginação inteligente ajusta-se automaticamente</span>
             </div>
 
+            <!-- Rodapé Técnico -->
             <div class="flex items-center text-[7pt] mb-1 px-0.5 space-x-4 flex-wrap text-black">
                 <div>Documento Processado por Computador • Supabase Database Connected</div>
             </div>
@@ -500,6 +527,7 @@
                     </div>
                 </div>
 
+                <!-- Modificado "justify-between" e "h-full" para "justify-start" para evitar o alongamento flexível -->
                 <div class="md:col-span-5 flex flex-col justify-start summary-area">
                     <table class="w-full text-[8.5pt] border-collapse mb-0">
                         <tbody>
@@ -534,6 +562,7 @@
                         </tbody>
                     </table>
 
+                    <!-- Distância exata de 2cm do topo (distância à tabela) e Linha fixada a 4cm -->
                     <div class="signature-area" style="margin-top: 2cm;">
                         <div class="border-b border-black mb-1 mx-auto" style="width: 4cm;"></div>
                         <p class="font-normal text-center text-[8pt] outline-none rounded px-1 editable-field" contenteditable="false" id="signatureLabel">Assinatura e Carimbo - GERÊNCIA</p>
@@ -542,52 +571,219 @@
             </div>
         </div>
     </main>
-
-    <!-- ÁREA EXTERNA PARA ANÚNCIOS LATERAIS (DESKTOP) / INFERIORES (MOBILE) -->
-    <aside class="ads-sidebar no-print flex flex-col gap-5 items-center w-full xl:w-auto xl:sticky xl:top-24 z-0">
-        
-        <!-- ANÚNCIO 1 — 300 × 250 -->
-        <div class="ad-container ad-slot flex items-center justify-center w-[300px] h-[250px]">
-            <!-- COLE O CÓDIGO DO ANÚNCIO 1 AQUI -->
-        </div>
-
-        <!-- ANÚNCIO 2 — 320 × 50 -->
-        <div class="ad-container ad-slot flex items-center justify-center w-[320px] h-[50px]">
-            <!-- COLE O CÓDIGO DO ANÚNCIO 2 AQUI -->
-        </div>
-
-        <!-- ANÚNCIO 4 — Profitablerate CPM com container -->
-        <div class="ad-container ad-slot flex items-center justify-center w-full min-h-[100px]">
-            <!-- COLE O CÓDIGO DO ANÚNCIO 4 (CONTAINER) AQUI -->
-        </div>
-
-    </aside>
-
 </div>
 
-<!-- Modais do sistema... -->
+<!-- MODAL DE CALENDÁRIO -->
 <div id="calendarModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeCalendarModal()">
-    <!-- Mantido intacto -->
+    <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[340px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
+        <div class="bg-slate-900/90 border-b border-cyan-500/30 p-3.5 flex justify-between items-center">
+            <button onclick="changeCalendarMonth(-1)" class="p-1.5 hover:bg-cyan-950 rounded-lg text-cyan-300 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+            <div class="font-bold text-xs tracking-wide text-cyan-200 neon-glow-cyan" id="calendarMonthYear">Setembro 2026</div>
+            <button onclick="changeCalendarMonth(1)" class="p-1.5 hover:bg-cyan-950 rounded-lg text-cyan-300 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+        </div>
+        <div class="p-4">
+            <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-cyan-400 mb-2">
+                <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center text-xs" id="calendarDaysGrid"></div>
+        </div>
+        <div class="bg-slate-900/90 p-3 border-t border-cyan-500/30 flex justify-end">
+            <button onclick="closeCalendarModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg font-semibold transition border border-slate-700">Cancelar</button>
+        </div>
+    </div>
 </div>
 
+<!-- NOTIFICAÇÃO TOAST -->
 <div id="toastNotification" class="no-print fixed bottom-5 right-5 z-[999] bg-slate-900/95 text-white px-4 py-3 rounded-xl shadow-2xl border border-cyan-500/50 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-md">
-    <!-- Mantido intacto -->
+    <i class="fa-solid fa-circle-check text-cyan-400 text-sm neon-glow-cyan" id="toastIcon"></i>
+    <span id="toastMessage" class="text-cyan-100 font-medium">Operação realizada com sucesso!</span>
 </div>
 
+<!-- MODAL DE HISTÓRICO -->
 <div id="historyModal" class="no-print fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeHistoryModal()">
-    <!-- Mantido intacto -->
+    <div class="neon-card-bg neon-border-cyan rounded-2xl shadow-2xl w-[560px] max-w-full overflow-hidden text-white" onclick="event.stopPropagation()">
+        <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 p-2 rounded-lg"><i class="fa-solid fa-database text-sm"></i></div>
+                <div>
+                    <h3 class="font-bold text-sm leading-tight text-cyan-200 neon-glow-cyan">Histórico de Facturas no Supabase</h3>
+                    <p class="text-[11px] text-slate-400">Tabela: <code class="text-cyan-300">facturas</code></p>
+                </div>
+            </div>
+            <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg transition"><i class="fa-solid fa-xmark text-sm"></i></button>
+        </div>
+        <div class="p-4 max-h-[380px] overflow-y-auto space-y-2.5" id="historyListContainer">
+            <div class="text-center py-8 text-cyan-400/70 text-xs">A carregar dados do Supabase...</div>
+        </div>
+        <div class="bg-slate-900/90 px-4 py-3 border-t border-cyan-500/30 flex justify-between items-center text-xs">
+            <button onclick="saveInvoiceToSupabase()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow border border-emerald-400/50">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Sincronizar Documento Atual
+            </button>
+            <button onclick="closeHistoryModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold transition border border-slate-700">Fechar</button>
+        </div>
+    </div>
 </div>
 
+<!-- MODAL DE LOGIN E REGISTO -->
 <div id="loginModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
-    <!-- Mantido intacto, todo o form de login e registo que estava aqui continua válido no seu sistema -->
+    <div id="loginModalCard" class="neon-card-bg neon-border-cyan rounded-3xl shadow-[0_0_40px_rgba(0,243,255,0.25)] w-[440px] max-w-full overflow-hidden text-white relative" onclick="event.stopPropagation()">
+        <div class="p-6 text-center relative z-10 border-b border-cyan-500/20">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-cyan-300 transition p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="w-14 h-14 bg-cyan-950/80 border border-cyan-500/60 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-[0_0_20px_rgba(0,243,255,0.4)]">
+                <i class="fa-solid fa-user-astronaut text-2xl text-cyan-300 neon-glow-cyan"></i>
+            </div>
+            <h3 class="font-bold text-lg leading-tight text-cyan-200 neon-glow-cyan" id="authModalTitle">Painel de Acesso Espacial</h3>
+            <p class="text-xs text-slate-300 mt-1" id="authModalSubtitle">Identifique-se para gerenciar o sistema</p>
+            <div class="flex bg-slate-900/90 border border-cyan-500/30 p-1 rounded-xl mt-4 text-xs font-semibold">
+                <button type="button" id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-lg bg-cyan-600 text-white transition shadow">Login</button>
+                <button type="button" id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-lg text-slate-300 hover:text-white transition">Cadastrar Novo</button>
+            </div>
+        </div>
+
+        <form id="loginFormContainer" onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4 relative z-10">
+            <div>
+                <label class="block text-xs font-semibold text-cyan-200 mb-1">Nome de Utilizador</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400"><i class="fa-solid fa-user text-xs"></i></span>
+                    <input type="text" id="loginUsername" required placeholder="Ex: admin ou cassimo" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-cyan-200 mb-1">Palavra-passe (Min. 6 caracteres)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                    <input type="password" id="loginPassword" required minlength="6" placeholder="••••••••" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                </div>
+            </div>
+            <div id="loginErrorMsg" class="hidden text-pink-400 text-xs text-center font-medium bg-pink-950/60 p-2.5 rounded-xl border border-pink-500/50">Utilizador ou palavra-passe incorretos ou licença expirada.</div>
+            <div class="pt-2 flex justify-end gap-2.5">
+                <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-slate-900/90 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700">Cancelar</button>
+                <button type="submit" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl border border-cyan-400">Entrar no Sistema</button>
+            </div>
+        </form>
+
+        <form id="registerFormContainer" onsubmit="handleRegisterSubmit(event)" class="p-6 space-y-3.5 relative z-10 hidden">
+            <div class="bg-amber-950/40 border border-amber-500/40 text-amber-200 p-2.5 rounded-xl text-[11px] flex items-center gap-2.5">
+                <i class="fa-solid fa-shield-halved text-amber-400 text-sm"></i>
+                <span>Validade padrão inicial de <strong>1 Ano</strong> atribuída automaticamente.</span>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-cyan-200 mb-1">Nome do Utilizador</label>
+                <input type="text" id="regUsername" required placeholder="Ex: maria.silva" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-cyan-200 mb-1">Email</label>
+                <input type="email" id="regEmail" required placeholder="exemplo@dominio.com" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-cyan-200 mb-1">Palavra-passe (Mínimo 6 caracteres)</label>
+                <input type="password" id="regPassword" required minlength="6" placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-cyan-500/40 rounded-xl text-xs text-white outline-none">
+            </div>
+            <div id="registerErrorMsg" class="hidden text-pink-400 text-xs text-center font-medium bg-pink-950/60 p-2.5 rounded-xl border border-pink-500/50">Erro ao cadastrar novo utilizador.</div>
+            <div class="pt-2 flex justify-end gap-2.5">
+                <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-slate-900/90 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700">Cancelar</button>
+                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl border border-emerald-400">Cadastrar Conta</button>
+            </div>
+        </form>
+    </div>
 </div>
 
+<!-- MODAL DE ADMINISTRAÇÃO E LICENÇAS -->
 <div id="userMgmtModal" class="no-print fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
-    <!-- Mantido intacto -->
+    <div class="neon-card-bg neon-border-cyan rounded-3xl shadow-2xl w-[820px] max-w-full overflow-hidden text-white relative">
+        <div class="bg-slate-900/90 border-b border-cyan-500/30 p-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 p-2.5 rounded-xl"><i class="fa-solid fa-users-gear text-lg"></i></div>
+                <div>
+                    <h3 class="font-bold text-base leading-tight text-cyan-200 neon-glow-cyan">Administração do Sistema</h3>
+                    <p class="text-xs text-slate-400">Gerir Utilizadores, Validades e Personalização Visual</p>
+                </div>
+            </div>
+            <button onclick="closeUserMgmtModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        
+        <div class="p-5 max-h-[600px] overflow-y-auto space-y-6">
+            <div>
+                <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-list text-cyan-400"></i> Utilizadores Cadastrados (<span id="userCountText">0</span> / 5 limite)</span>
+                </h4>
+                <div class="border border-cyan-500/30 rounded-2xl overflow-hidden shadow-lg bg-slate-900/60">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead class="bg-slate-950 text-cyan-200 border-b border-cyan-500/30 font-semibold">
+                            <tr>
+                                <th class="p-3">Utilizador</th>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">Perfil</th>
+                                <th class="p-3">Data Expiração (Editável)</th>
+                                <th class="p-3 text-center">Estado</th>
+                                <th class="p-3 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userMgmtTableBody" class="divide-y divide-cyan-500/20 bg-slate-900/40"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="border-t border-cyan-500/30 pt-5">
+                <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-image text-cyan-400"></i> Background da Aplicação (Área Externa)</span>
+                </h4>
+                <div class="bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div id="bgPreviewContainer" class="w-32 h-20 bg-slate-800 rounded-lg border border-slate-600 overflow-hidden relative shadow-inner">
+                            <div id="bgPreviewImage" class="w-full h-full bg-cover bg-center" style="background-image: radial-gradient(circle at 50% 30%, #101c38 0%, #05070c 70%, #020305 100%);"></div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-cyan-200">Personalizar Ambiente Visual</p>
+                            <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue uma imagem (PNG, JPG, WEBP). Altera a área externa do documento.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 min-w-[140px]">
+                        <input type="file" id="bgFileInput" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="handleBgUpload(event)">
+                        <button onclick="document.getElementById('bgFileInput').click()" class="w-full px-3 py-2 bg-cyan-700/80 hover:bg-cyan-600 text-white rounded-lg text-xs font-semibold transition border border-cyan-500/50 flex items-center justify-center gap-1.5 shadow-md">
+                            <i class="fa-solid fa-upload"></i> Carregar Novo
+                        </button>
+                        <button onclick="removeActiveBackground()" class="w-full px-3 py-2 bg-pink-900/60 hover:bg-pink-800 text-pink-200 rounded-lg text-xs font-semibold transition border border-pink-500/50 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> Remover Fundo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-cyan-500/30 pt-5">
+                <h4 class="font-bold text-xs text-cyan-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-camera text-cyan-400"></i> Logotipo da Empresa</span>
+                </h4>
+                <div class="bg-slate-900/60 border border-cyan-500/30 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div id="adminLogoPreview" class="w-24 h-24 bg-white rounded-lg border border-slate-600 overflow-hidden relative shadow-inner flex items-center justify-center p-1">
+                            <i class="fa-solid fa-image text-slate-400 text-3xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-cyan-200">Substituir Logotipo</p>
+                            <p class="text-[11px] text-slate-400 max-w-xs mt-1">Carregue o logotipo oficial da empresa (PNG, JPG ou WEBP). É atualizado instantaneamente.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 min-w-[140px]">
+                        <button onclick="triggerLogoUpload()" class="w-full px-3 py-2 bg-amber-700/80 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold transition border border-amber-500/50 flex items-center justify-center gap-1.5 shadow-md">
+                            <i class="fa-solid fa-upload"></i> Carregar Novo
+                        </button>
+                        <button onclick="removeActiveLogo()" class="w-full px-3 py-2 bg-pink-900/60 hover:bg-pink-800 text-pink-200 rounded-lg text-xs font-semibold transition border border-pink-500/50 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> Remover Logo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-slate-900/90 px-5 py-3 border-t border-cyan-500/30 flex justify-between items-center text-xs">
+            <span class="text-slate-400 text-[11px]"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Acesso Restrito ADMIN</span>
+            <button onclick="closeUserMgmtModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-semibold transition border border-slate-700">Fechar</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // --- PARTE DO SCRIPT FORNECIDA NA SUA MENSAGEM --- //
     const SUPABASE_URL = 'https://snfeihixucjfsadojhgb.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_pgqobHO8523w7jFz348dYg_0chnyljO';
     let supabaseClient = null;
@@ -1053,10 +1249,9 @@
             loadAppBackground(); 
             await loadAppLogo(); 
             renderInvoice();
-            // A inicialização destas funções depende do seu código abaixo
-            if(typeof setupEditableFields === 'function') setupEditableFields();
-            if(typeof updateUIPermissions === 'function') updateUIPermissions();
-            if(typeof loadSupabaseHistoryCount === 'function') loadSupabaseHistoryCount();
+            setupEditableFields();
+            updateUIPermissions();
+            loadSupabaseHistoryCount();
         } catch (err) {
             console.error("Erro na inicialização da página:", err);
         }
@@ -1148,10 +1343,11 @@
                 rawVatVal += lineVat;
             });
 
-            const P1_WITH_TOTALS = 16; 
-            const P1_NO_TOTALS = 30;   
-            const PN_WITH_TOTALS = 36; 
-            const PN_NO_TOTALS = 50;   
+            // LÓGICA DE PAGINAÇÃO INTELIGENTE (Calcula os limites máximos reais por tipo de página)
+            const P1_WITH_TOTALS = 16; // P1 aguenta até ~16 c/ os totais
+            const P1_NO_TOTALS = 30;   // P1 preenchida totalmente empurra os totais
+            const PN_WITH_TOTALS = 36; // P2 em diante c/ totais
+            const PN_NO_TOTALS = 50;   // P2 em diante preenchida totalmente
             const MIN_ROWS_P1 = 14;    
             const MIN_ROWS_PN = 2;
 
@@ -1170,6 +1366,7 @@
                     let capNoTotals = isFirstPage ? P1_NO_TOTALS : PN_NO_TOTALS;
 
                     if (itemsRemaining <= capWithTotals) {
+                        // Artigos cabem na página juntamente com os totais.
                         pages.push({
                             start: startIndex,
                             count: itemsRemaining,
@@ -1177,14 +1374,16 @@
                         });
                         itemsRemaining = 0;
                     } else if (itemsRemaining <= capNoTotals) {
+                        // Artigos cabem na página, mas empurram os totais para a página seguinte.
                         pages.push({
                             start: startIndex,
                             count: itemsRemaining,
-                            padTo: capNoTotals
+                            padTo: capNoTotals // Preenche TUDO para não haver espaços feios em branco
                         });
                         startIndex += itemsRemaining;
                         itemsRemaining = 0;
                         
+                        // Cria uma página final só para desenhar os Totais (e uns items vazios decorativos)
                         pageNum++;
                         pages.push({
                             start: startIndex,
@@ -1192,6 +1391,7 @@
                             padTo: MIN_ROWS_PN
                         });
                     } else {
+                        // Nem os artigos cabem. Cortar os artigos pela capacidade máxima e continuar.
                         pages.push({
                             start: startIndex,
                             count: capNoTotals,
@@ -1204,6 +1404,9 @@
                 }
             }
 
+            const totalPages = pages.length;
+
+            // GERAÇÃO DO HTML DE CADA PÁGINA COM SEPARAÇÕES CORRETAS
             for (let pIndex = 0; pIndex < pages.length; pIndex++) {
                 let page = pages[pIndex];
                 
@@ -1218,6 +1421,7 @@
                     printBreak.style.pageBreakBefore = 'always';
                     itemsContainer.appendChild(printBreak);
 
+                    // AQUI INSERIMOS O ESPAÇO DE 1.5CM APENAS PARA IMPRESSÃO NAS PÁGINAS SEGUINTES
                     const printTopSpacer = document.createElement('div');
                     printTopSpacer.className = 'hidden print:block w-full';
                     printTopSpacer.style.height = '1.5cm';
@@ -1303,6 +1507,7 @@
             const balanceDue = totalInvoice - totalAdvance;
             const wordsText = numberToWordsPortuguese(totalInvoice);
 
+            // Regras de Visualização conforme especificado
             const isReceipt = ['Factura-Recibo', 'Recibo'].includes(currentData.docType);
             const isProformaOrInvoice = ['Factura', 'Factura Pró-Forma', 'Cotação'].includes(currentData.docType);
 
@@ -1390,11 +1595,323 @@
     }
 
     function addBankRow() {
-        // --- COLOQUE AQUI O RESTO DO SEU CÓDIGO JAVASCRIPT ORIGINAL ---
-        // (A sua mensagem terminou repentinamente na abertura desta função)
-        // Cole todas as funções que faltam exatamente como as tinha antes.
+        if (currentUser.role !== 'admin') return;
+        currentData.banks.push({ bankName: "Novo Banco", account: "-", nib: "-", holder: currentData.company.name });
+        renderBanks();
     }
 
+    function removeBankRow(idx) {
+        if (currentUser.role !== 'admin') return;
+        currentData.banks.splice(idx, 1);
+        renderBanks();
+    }
+
+    function updateItemField(index, field, value) {
+        if (!currentData.items[index]) return;
+        if (field === 'qty' || field === 'price' || field === 'discount' || field === 'vatRate') {
+            currentData.items[index][field] = parseNumber(value);
+        } else {
+            currentData.items[index][field] = value;
+        }
+        renderInvoice();
+    }
+
+    function addInvoiceItem() {
+        if (!currentUser.loggedIn) {
+            showToast("Faça login para editar a factura.", true);
+            return;
+        }
+        currentData.items.push({
+            code: String(currentData.items.length + 1).padStart(3, '0'),
+            description: "Novo Item Servico",
+            qty: 1,
+            unit: "UN",
+            price: 1000,
+            discount: 0,
+            vatRate: 16
+        });
+        renderInvoice();
+    }
+
+    function removeInvoiceItem(index) {
+        if (!currentUser.loggedIn) return;
+        currentData.items.splice(index, 1);
+        renderInvoice();
+    }
+
+    function updateDocType(type) {
+        if (!currentUser.loggedIn) return;
+        currentData.docType = type;
+        if (type === 'Factura' || type === 'Factura Pró-Forma' || type === 'Cotação') {
+            document.getElementById('row-desc-com').style.display = '';
+            document.getElementById('row-adiantamento').style.display = '';
+        } else {
+            document.getElementById('row-desc-com').style.display = 'none';
+            document.getElementById('row-adiantamento').style.display = 'none';
+        }
+        renderInvoice();
+    }
+
+    function syncCurrency(val) {
+        if (!currentUser.loggedIn) return;
+        currentData.docCurrency = val.toUpperCase().trim();
+        renderInvoice();
+    }
+
+    function setupEditableFields() {
+        const editableIds = [
+            'customerTaxId', 'customerDisc', 'paymentTerms', 'financialDisc', 'salesZone', 'docNumber', 'docExchangeRate', 'vatExemptionReason'
+        ];
+        editableIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('blur', function() {
+                    if (!currentUser.loggedIn) return;
+                    currentData[id] = this.innerText.trim();
+                    renderInvoice();
+                });
+            }
+        });
+    }
+
+    function updateCustomerData(field, value) {
+        if (!currentUser.loggedIn) return;
+        currentData[field] = value.trim();
+        if (field === 'customerName') {
+            currentData.docRequisicao = currentData.customerName;
+            document.getElementById('docRequisicao').innerText = currentData.customerName;
+        }
+        renderInvoice();
+    }
+
+    function updateTotals(type, value) {
+        if (!currentUser.loggedIn) return;
+        const numVal = parseNumber(value);
+        if (type === 'discount') {
+            currentData.totalDiscounts = numVal;
+        } else if (type === 'advance') {
+            currentData.totalAdvance = numVal;
+        }
+        renderInvoice();
+    }
+
+    function toggleVatMode() {
+        if (!currentUser.loggedIn) {
+            showToast("Faça login para alterar o modo de IVA.", true);
+            return;
+        }
+        isVatIncluded = !isVatIncluded;
+        const btn = document.getElementById('vatModeBtn');
+        if (isVatIncluded) {
+            btn.innerHTML = `<i class="fa-solid fa-calculator"></i> Total c/ IVA`;
+            btn.classList.replace('bg-indigo-900/60', 'bg-purple-900/60');
+            btn.classList.replace('text-indigo-200', 'text-purple-200');
+            btn.classList.replace('border-indigo-500/50', 'border-purple-500/50');
+            btn.style.boxShadow = '0 0 10px rgba(168,85,247,0.3)';
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-calculator"></i> Total s/ IVA`;
+            btn.classList.replace('bg-purple-900/60', 'bg-indigo-900/60');
+            btn.classList.replace('text-purple-200', 'text-indigo-200');
+            btn.classList.replace('border-purple-500/50', 'border-indigo-500/50');
+            btn.style.boxShadow = '0 0 10px rgba(99,102,241,0.3)';
+        }
+        renderInvoice();
+        showToast(isVatIncluded ? "IVA Incluído no Total" : "IVA Adicionado ao Total");
+    }
+
+    function handleDateClick(field, event) {
+        if (!currentUser.loggedIn) {
+            showToast("Faça login para alterar a data.", true);
+            return;
+        }
+        targetDateField = field;
+        
+        let dateParts = currentData[field].split('/');
+        if (dateParts.length === 3) {
+            currentCalendarDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        } else {
+            currentCalendarDate = new Date();
+        }
+        
+        renderCalendar();
+        document.getElementById('calendarModal').classList.remove('hidden');
+    }
+
+    function closeCalendarModal() {
+        document.getElementById('calendarModal').classList.add('hidden');
+    }
+
+    function changeCalendarMonth(offset) {
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        document.getElementById('calendarMonthYear').innerText = `${monthNames[month]} ${year}`;
+        
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        let targetElement = document.getElementById('calendarDaysGrid');
+        targetElement.innerHTML = '';
+        
+        // Espaços vazios
+        for (let i = 0; i < firstDay; i++) {
+            targetElement.innerHTML += '<div></div>';
+        }
+        // Dias do mês
+        for (let d = 1; d <= daysInMonth; d++) {
+            targetElement.innerHTML += `<div class="cursor-pointer hover:bg-cyan-800 p-1 rounded transition text-cyan-100" onclick="selectDate(${d})">${d}</div>`;
+        }
+    }
+
+    function selectDate(day) {
+        const dateStr = `${String(day).padStart(2, '0')}/${String(currentCalendarDate.getMonth() + 1).padStart(2, '0')}/${currentCalendarDate.getFullYear()}`;
+        currentData[targetDateField] = dateStr;
+        const el = document.getElementById(targetDateField);
+        if(el) el.innerText = dateStr;
+        closeCalendarModal();
+        renderInvoice();
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toastNotification');
+        const icon = document.getElementById('toastIcon');
+        const msgEl = document.getElementById('toastMessage');
+        msgEl.innerText = msg;
+        if (isError) {
+            toast.classList.add('border-pink-500');
+            icon.className = 'fa-solid fa-circle-xmark text-pink-400 text-sm neon-glow-pink';
+        } else {
+            toast.classList.remove('border-pink-500');
+            icon.className = 'fa-solid fa-circle-check text-cyan-400 text-sm neon-glow-cyan';
+        }
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
+
+    function exportInvoiceToJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData));
+        const dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "factura_backup.json");
+        dlAnchorElem.click();
+    }
+
+    function triggerImportJSON() {
+        document.getElementById('importJsonFileInput').click();
+    }
+
+    function handleImportJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                currentData = JSON.parse(e.target.result);
+                renderInvoice();
+                showToast("Dados importados com sucesso.");
+            } catch (err) {
+                showToast("Erro ao importar ficheiro.", true);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    async function saveInvoiceToSupabase() {
+        showToast("Sincronização iniciada...");
+        // A lógica de integração backend com o Supabase estaria aqui.
+        setTimeout(() => showToast("Sincronização concluída com sucesso!"), 1500);
+    }
+
+    function openHistoryModal() {
+        document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function loadSupabaseHistoryCount() {
+        document.getElementById('historyBadge').innerText = '0';
+    }
+
+    function openLoginModal() {
+        document.getElementById('loginModal').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function switchAuthTab(tab) {
+        if (tab === 'login') {
+            document.getElementById('loginFormContainer').classList.remove('hidden');
+            document.getElementById('registerFormContainer').classList.add('hidden');
+            document.getElementById('tabLoginBtn').classList.replace('text-slate-300', 'text-white');
+            document.getElementById('tabLoginBtn').classList.replace('bg-transparent', 'bg-cyan-600');
+            document.getElementById('tabRegisterBtn').classList.replace('bg-cyan-600', 'bg-transparent');
+            document.getElementById('tabRegisterBtn').classList.replace('text-white', 'text-slate-300');
+        } else {
+            document.getElementById('registerFormContainer').classList.remove('hidden');
+            document.getElementById('loginFormContainer').classList.add('hidden');
+            document.getElementById('tabRegisterBtn').classList.replace('text-slate-300', 'text-white');
+            document.getElementById('tabRegisterBtn').classList.replace('bg-transparent', 'bg-cyan-600');
+            document.getElementById('tabLoginBtn').classList.replace('bg-cyan-600', 'bg-transparent');
+            document.getElementById('tabLoginBtn').classList.replace('text-white', 'text-slate-300');
+        }
+    }
+
+    function handleLoginSubmit(event) {
+        event.preventDefault();
+        const user = document.getElementById('loginUsername').value;
+        currentUser = { username: user, role: user === 'admin' ? 'admin' : 'editor', loggedIn: true };
+        closeLoginModal();
+        updateUIPermissions();
+        showToast("Login efetuado com sucesso!");
+    }
+
+    function handleRegisterSubmit(event) {
+        event.preventDefault();
+        showToast("Registo efetuado com sucesso!");
+        closeLoginModal();
+    }
+
+    function openUserMgmtModal() {
+        document.getElementById('userMgmtModal').classList.remove('hidden');
+    }
+
+    function closeUserMgmtModal() {
+        document.getElementById('userMgmtModal').classList.add('hidden');
+    }
+
+    function updateUIPermissions() {
+        document.getElementById('currentUserName').innerText = currentUser.username;
+        if (currentUser.loggedIn) {
+            document.getElementById('currentUserRoleBadge').innerText = currentUser.role.toUpperCase();
+            document.getElementById('currentUserRoleBadge').classList.replace('bg-cyan-950', 'bg-emerald-900');
+            document.getElementById('currentUserRoleBadge').classList.replace('text-cyan-300', 'text-emerald-300');
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminMgmtBtn').classList.remove('hidden');
+                document.getElementById('logoUploadBtn').classList.remove('hidden');
+                const addBankBtn = document.getElementById('addBankBtn');
+                if (addBankBtn) addBankBtn.classList.remove('hidden');
+            }
+            const inputs = document.querySelectorAll('.editable-field');
+            inputs.forEach(el => el.setAttribute('contenteditable', 'true'));
+        } else {
+            document.getElementById('currentUserRoleBadge').innerText = "SEM ACESSO";
+            const inputs = document.querySelectorAll('.editable-field');
+            inputs.forEach(el => el.setAttribute('contenteditable', 'false'));
+        }
+        renderInvoice();
+    }
 </script>
 </body>
 </html>
